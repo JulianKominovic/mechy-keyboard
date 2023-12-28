@@ -8,13 +8,35 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "tauri-ts-react-vite-tailwind-extras",
-    "version": "0.1.0"
+    "productName": "The cheapest mechanical keyboard",
+    "version": "0.0.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": false,
+        "copyFile": false,
+        "createDir": false,
+        "exists": false,
+        "readDir": true,
+        "readFile": true,
+        "removeDir": false,
+        "removeFile": false,
+        "renameFile": false,
+        "scope": ["$APPDATA/**/*"],
+        "writeFile": false
+      },
+      "protocol": {
+        "all": true,
+        "asset": true,
+        "assetScope": ["**"]
+      }
     },
+
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
@@ -30,8 +52,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
-      "longDescription": "",
+      "identifier": "com.jkominovic.the-cheapest-mechanical-keyboard",
+      "longDescription": "The cheapest mechanical keyboard. Simulate the sounds of typing on a mechanical keyboard with your regular keyboard.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -49,7 +71,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; media-src 'self' asset: https://asset.localhost;"
     },
     "updater": {
       "active": false
@@ -59,7 +81,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "tauri-ts-react-vite-tailwind-extras",
+        "title": "The cheapest mechanical keyboard",
         "width": 800
       }
     ]

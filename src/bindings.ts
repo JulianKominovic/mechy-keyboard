@@ -14,4 +14,8 @@ export function greet(name: string) {
     return invoke()<string>("greet", { name })
 }
 
+export function chooseSoundpack(folderPath: string) {
+    return invoke()<null>("choose_soundpack", { folderPath })
+}
+
 

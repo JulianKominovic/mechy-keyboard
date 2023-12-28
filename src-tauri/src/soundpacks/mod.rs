@@ -176,14 +176,5 @@ pub mod key_code {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ConfigStruct {
-    pub id: String,
-    pub name: String,
-    pub default: bool,
-    #[serde(rename = "key_define_type")]
-    pub key_define_type: String,
-    #[serde(rename = "includes_numpad")]
-    pub includes_numpad: bool,
-    pub sound: String,
-    pub defines: HashMap<i32, (i32, i32)>,
-    pub tags: Vec<String>,
+    pub defines: HashMap<i32, Option<(i32, i32)>>,
 }
