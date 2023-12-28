@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { greet } from "./bindings";
 
+const SOUND_PACKS = [{}];
+
 function App() {
   return (
     <div className="w-full mx-auto">
@@ -18,6 +20,10 @@ function App() {
       <nav>
         <form action=""></form>
       </nav>
+
+      <main>
+        <ul></ul>
+      </main>
     </div>
   );
 }
