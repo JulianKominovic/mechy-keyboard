@@ -60,7 +60,7 @@ function App() {
       </header>
 
       <textarea
-        className="w-full p-4 mt-4 border rounded-md border-neutral-200"
+        className="w-full p-2 mt-4 border rounded-md border-neutral-200"
         name="try"
         id="try"
         placeholder="Write some text!"

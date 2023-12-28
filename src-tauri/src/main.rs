@@ -6,6 +6,7 @@ use rdev::{listen, EventType, Key};
 use rodio::{source::Source, Decoder, OutputStream, Sink};
 use serde_json;
 use std::env;
+use std::f32::consts::E;
 use std::io::BufReader;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
@@ -66,6 +67,8 @@ static SOUNDPACK: Lazy<Arc<Mutex<Soundpack>>> = Lazy::new(|| {
     )))
 });
 
+static KEYS_PRESSED: Lazy<Mutex<Vec<Key>>> = Lazy::new(|| Mutex::new(Vec::new()));
+
 #[tauri::command]
 #[specta::specta] // <-- This bit here
 fn choose_soundpack(folder_path: String) {
@@ -82,7 +85,19 @@ fn main() {
 
         if let Err(error) = listen(move |event| {
             match event.event_type {
+                EventType::KeyRelease(key) => {
+                    let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
+                    keys_pressed_lock.retain(|&x| x != key);
+                }
                 EventType::KeyPress(key) => {
+                    let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
+                    if keys_pressed_lock.contains(&key) {
+                        drop(keys_pressed_lock);
+                        return;
+                    } else {
+                        keys_pressed_lock.push(key);
+                        drop(keys_pressed_lock);
+                    }
                     println!("Key press {:?}", key);
                     // So inefficient, but it works
                     if pool.active_count() >= n_workers {
