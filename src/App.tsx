@@ -1,42 +1,23 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import { greet } from "./bindings";
 
 function App() {
-  const [greeting, setGreeting] = useState("");
   return (
-    <div className="container">
-      <h1>Welcome to Tauri!</h1>
+    <div className="w-full mx-auto">
+      <header className="w-full">
+        <img
+          src="https://images-platform.99static.com/n9S7iOvT0hCDS0aZi2Wxz1v8fVI=/201x201:1812x1812/500x500/top/smart/99designs-contests-attachments/99/99416/attachment_99416788"
+          alt="Just for now..."
+          className="object-none w-64 h-64 mx-auto"
+        />
+        <h1 className="text-3xl mx-auto max-w-[20ch] text-center text-balance font-semibold">
+          The cheapest mechanical keyboard
+        </h1>
+      </header>
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <h1>{greeting}</h1>
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet(
-            new FormData(e.target as HTMLFormElement).get("name") as string
-          ).then((greeting) => {
-            setGreeting(greeting);
-          });
-        }}
-      >
-        <input id="greet-input" name="name" placeholder="Enter a name..." />
-        <button type="submit">Greet</button>
-      </form>
+      <nav>
+        <form action=""></form>
+      </nav>
     </div>
   );
 }
