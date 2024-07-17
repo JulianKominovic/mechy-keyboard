@@ -3,7 +3,10 @@
 
 use keypress::key_code::code_from_key;
 use once_cell::sync::Lazy;
+use plugins::mac_os::traffic_lights::setup_traffic_light_positioner;
 use rdev::{listen, EventType, Key};
+use tauri::Manager;
+use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
 
 use std::env;
 use std::sync::{Arc, Mutex};
@@ -11,6 +14,7 @@ use std::thread;
 
 pub mod events;
 pub mod keypress;
+pub mod plugins;
 pub mod soundpacks;
 pub mod utils;
 
@@ -18,6 +22,14 @@ use events::greet;
 use soundpacks::Soundpack;
 use specta::collect_types;
 use tauri_specta::ts;
+
+#[cfg(target_os = "macos")]
+#[macro_use]
+extern crate cocoa;
+
+#[cfg(target_os = "macos")]
+#[macro_use]
+extern crate objc;
 
 static SOUNDPACK: Lazy<Arc<Mutex<Soundpack>>> = Lazy::new(|| {
     Arc::new(Mutex::new(Soundpack::new(
@@ -74,7 +86,28 @@ fn main() {
         }
     });
     tauri::Builder::default()
+        .setup(move |app| {
+            let window = app.get_window("main").unwrap();
+            let window_clone = window.clone();
+            #[cfg(target_os = "macos")]
+            apply_vibrancy(&window, NSVisualEffectMaterial::Sidebar, None, None)
+                .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
+
+            #[cfg(target_os = "windows")]
+            apply_blur(&window, Some((18, 18, 18, 125)))
+                .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
+
+            #[cfg(target_os = "macos")]
+            window.on_window_event(move |event| {
+                if let tauri::WindowEvent::ThemeChanged(_theme) = event {
+                    setup_traffic_light_positioner(window_clone.clone())
+                }
+            });
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![greet, choose_soundpack])
+        .plugin(plugins::mac_os::traffic_lights::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -52,8 +52,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.jkominovic.the-cheapest-mechanical-keyboard",
-      "longDescription": "The cheapest mechanical keyboard. Simulate the sounds of typing on a mechanical keyboard with your regular keyboard.",
+      "identifier": "com.jkominovic.mechy-keyboard",
+      "longDescription": "Give your keyboard a voice. Simulate the sounds of typing on a mechanical keyboard.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -81,8 +81,12 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "The cheapest mechanical keyboard",
-        "width": 800
+        "transparent": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "title": "Mechy Keyboard",
+        "width": 800,
+        "fileDropEnabled": false
       }
     ]
   }

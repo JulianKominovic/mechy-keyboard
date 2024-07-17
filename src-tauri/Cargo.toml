@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "mechy-keyboard"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Give your keyboard a voice. Simulate the sounds of typing on a mechanical keyboard."
+authors = ["Julian Kominovic"]
 license = ""
-repository = ""
-default-run = "audiotransform"
+repository = "https://github.com/JulianKominovic/mechy-keyboard"
+default-run = "mechy-keyboard"
 edition = "2021"
 rust-version = "1.60"
 
@@ -24,6 +24,12 @@ strum = "0.25.0"
 rdev = { git = "https://github.com/fufesou/rdev" }
 once_cell = "1.19.0"
 kira = "0.9.3"
+rand = "0.8.5"
+window-vibrancy = "0.4.3"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+cocoa = "0.25.0"
+objc = "0.2.7"
 rand = "0.8.5"
 
 [profile.dev.package.kira]
