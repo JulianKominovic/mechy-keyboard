@@ -1,8 +1,7 @@
-// https://github.com/oscartbeaumont/tauri-specta
-// Completely typesafe Tauri commands
-
-#[specta::specta] // <-- This bit here
-#[tauri::command]
-pub fn greet(name: String) -> String {
-    format!("Hello {name}!")
-}
+// #[tauri::command]
+// #[specta::specta] // <-- This bit here
+// fn choose_soundpack(id: String) {
+//     let soundpack = Arc::clone(&SOUNDPACK);
+//     let mut soundpack = soundpack.lock().unwrap();
+//     soundpack.set_new_soundpack(folder_path);
+// }

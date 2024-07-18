@@ -46,7 +46,19 @@ impl Soundpack {
         }
     }
 
-    pub fn set_new_soundpack(&mut self, file_path: String) {}
+    pub fn choose_soundpack(&mut self, name: String) -> () {
+        let json_file_content = std::fs::read_to_string(Path::new(&name).join("config.json"))
+            .expect("Something went wrong reading the file");
+        let json: ConfigStruct =
+            serde_json::from_str(json_file_content.as_str()).expect("JSON was not well-formatted");
+        let defines: HashMap<i32, (i32, i32)> =
+            json.defines.iter().map(|(k, v)| (*k, v.unwrap())).collect();
+        let ogg_file = Path::new(&name).join("sound.ogg");
+        let sound_data = StaticSoundData::from_file(ogg_file).unwrap();
+
+        self.sound_slices = defines;
+        self.sound_data = sound_data;
+    }
     pub fn play_sound(&self, key: Option<i32>) {
         let key = key.unwrap_or_else(|| 1);
         if let Some(ranges) = self.sound_slices.get(&key) {

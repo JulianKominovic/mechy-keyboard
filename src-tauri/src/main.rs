@@ -18,7 +18,6 @@ pub mod plugins;
 pub mod soundpacks;
 pub mod utils;
 
-use events::greet;
 use soundpacks::Soundpack;
 use specta::collect_types;
 use tauri_specta::ts;
@@ -46,18 +45,12 @@ static KEYS_PRESSED: Lazy<Mutex<Vec<Key>>> = Lazy::new(|| Mutex::new(Vec::new())
 
 #[tauri::command]
 #[specta::specta] // <-- This bit here
-fn choose_soundpack(folder_path: String) {
-    let soundpack = Arc::clone(&SOUNDPACK);
-    let mut soundpack = soundpack.lock().unwrap();
-    soundpack.set_new_soundpack(folder_path);
+fn choose_soundpack(id: String) {
+    SOUNDPACK.lock().unwrap().choose_soundpack(id);
 }
 fn main() {
     #[cfg(debug_assertions)]
-    ts::export(
-        collect_types![greet, choose_soundpack],
-        "../src/bindings.ts",
-    )
-    .unwrap();
+    ts::export(collect_types![choose_soundpack], "../src/bindings.ts").unwrap();
 
     thread::spawn(|| {
         if let Err(error) = listen(move |event| match event.event_type {
@@ -106,7 +99,7 @@ fn main() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet, choose_soundpack])
+        .invoke_handler(tauri::generate_handler![choose_soundpack])
         .plugin(plugins::mac_os::traffic_lights::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
