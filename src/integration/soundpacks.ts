@@ -1,6 +1,6 @@
 import { join } from "@tauri-apps/api/path";
 import { chooseSoundpack } from "../bindings";
-import { APP_CACHE_DIR, SOUNDPACKS_DIR } from "../const";
+import { APP_CACHE_DIR, SOUNDPACKS_DIR } from "../init";
 import { fs } from "@tauri-apps/api";
 import { Err, Ok, Result } from "ts-results";
 // enum DownloadSoundpackErrors {

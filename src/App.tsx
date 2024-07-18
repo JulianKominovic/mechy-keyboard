@@ -1,17 +1,122 @@
 import { Toaster, toast } from "sonner";
 
-import { KEYBOARD_MODELS } from "./const";
 import {
-  changeSoundpack,
-  getSoundpacksInstalled,
-} from "./integration/soundpacks";
-const installedSoundpacks = await getSoundpacksInstalled();
+  DEFAULT_SOUNDPACK,
+  KEYBOARD_MODELS,
+  LOCAL_STORAGE_SOUNDPACK_KEY,
+  SOUNDPACKS_INSTALLED,
+} from "./init";
+import { changeSoundpack } from "./integration/soundpacks";
+import LogoImage from "./assets/logo-transparent.png";
+import useLocalStorage from "use-local-storage";
+import { error, trace } from "tauri-plugin-log-api";
+import Separator from "./components/separator";
+import { useEffect, useState } from "react";
 
 function cn(...classNames: any[]) {
   return classNames.filter((e) => e).join(" ");
 }
 
+function KeyboardItems({
+  soundpack,
+  isInstalled,
+  isSelected,
+  onClick,
+}: {
+  isSelected: boolean;
+  onClick: () => void;
+  isInstalled: boolean;
+  soundpack: (typeof KEYBOARD_MODELS)[0];
+}) {
+  return (
+    <button
+      onClick={onClick}
+      key={soundpack.id}
+      className={cn(
+        "flex items-center text-left w-full h-8 gap-2 text-black/60 hover:bg-black/10 text-xs rounded-lg px-2 text-ellipsis truncate",
+        isInstalled ? "opacity-100" : "opacity-35 hover:opacity-100",
+        isSelected ? "bg-black/[0.05]" : ""
+      )}
+    >
+      <div
+        style={{
+          backgroundColor: soundpack.color,
+        }}
+        className="rounded-[50%] w-2 h-2 flex-shrink-0"
+      ></div>
+      <span className="font-bold">{soundpack.vendor.name} •</span>
+
+      <span className="truncate">{soundpack.name}</span>
+    </button>
+  );
+}
+
 function App() {
+  const [installedSoundpacksIds, setInstalledSoundpacksIds] = useState(
+    new Set(SOUNDPACKS_INSTALLED)
+  );
+  const [selectedSoundpackId, setSelectedSoundpackId] = useLocalStorage(
+    LOCAL_STORAGE_SOUNDPACK_KEY,
+    DEFAULT_SOUNDPACK
+  );
+
+  const alreadyInstalled = KEYBOARD_MODELS.filter((model) =>
+    installedSoundpacksIds.has(model.id)
+  );
+  const notInstalled = KEYBOARD_MODELS.filter(
+    (model) => !installedSoundpacksIds.has(model.id)
+  );
+
+  const onClick = (soundpack: (typeof KEYBOARD_MODELS)[0]) => {
+    return () => {
+      if (selectedSoundpackId === soundpack.id) return;
+      const id = toast.loading(`Switching to ${soundpack.name}`, {
+        important: true,
+        id: soundpack.id + "loading",
+      });
+      changeSoundpack(soundpack.id)
+        .then(() => {
+          toast.success(`Now using ${soundpack.name}`);
+          setSelectedSoundpackId(soundpack.id);
+          setInstalledSoundpacksIds((prev) => prev.add(soundpack.id));
+          trace(`Switched to ${soundpack.name}`);
+        })
+        .catch((err) => {
+          toast.error(`Failed to switch to ${soundpack.name}`, {
+            description: err,
+          });
+          error(err);
+        })
+        .finally(() => {
+          toast.dismiss(id);
+        });
+    };
+  };
+
+  useEffect(() => {
+    if (selectedSoundpackId) {
+      const id = toast.loading("Starting up", {
+        description: "Please wait while we load your soundpack",
+      });
+
+      changeSoundpack(selectedSoundpackId)
+        .then(() => {
+          setSelectedSoundpackId(selectedSoundpackId);
+          setInstalledSoundpacksIds((prev) => prev.add(selectedSoundpackId));
+        })
+        .catch((err) => {
+          error(err);
+        })
+        .finally(() => toast.dismiss(id));
+    }
+  }, []);
+
+  console.log({
+    installedSoundpacksIds,
+    selectedSoundpackId,
+    alreadyInstalled,
+    notInstalled,
+  });
   return (
     <>
       <nav
@@ -21,7 +126,7 @@ function App() {
       <div
         className="w-full grid grid-rows-1 h-[100dvh] overflow-hidden transition-all ease-in-out duration-300"
         style={{
-          gridTemplateColumns: true ? "240px 1fr" : "0px 1fr",
+          gridTemplateColumns: true ? "280px 1fr" : "0px 1fr",
         }}
       >
         <aside
@@ -34,94 +139,69 @@ function App() {
           )}
         >
           <div className="flex-grow">
-            {KEYBOARD_MODELS.sort((a, b) => {
-              if (installedSoundpacks.includes(a.id)) return -1;
-              if (installedSoundpacks.includes(b.id)) return 1;
-              return 0;
-            }).map((soundpack) => {
-              const isSelected = false;
-              const isInstalled = installedSoundpacks.includes(soundpack.id);
+            <Separator className="mb-2">
+              Installed ({alreadyInstalled.length})
+            </Separator>
+            {alreadyInstalled.map((soundpack) => {
+              const isSelected = selectedSoundpackId === soundpack.id;
+              const isInstalled = true;
               return (
-                <button
-                  onClick={() => {
-                    toast.promise(changeSoundpack(soundpack.id), {
-                      important: true,
-                      loading: `${
-                        isInstalled ? "Switching" : "Downloading"
-                      } to ${soundpack.name}...`,
-                      success: `Now using ${soundpack.name}`,
-                      error: `Failed to switch to ${soundpack.name}`,
-                    });
-                  }}
-                  key={soundpack.id}
-                  className={cn(
-                    "flex items-center text-left w-full h-8 gap-2 text-black/60 hover:bg-black/10 text-xs rounded-lg px-2 text-ellipsis truncate",
-                    isInstalled ? "opacity-100" : "opacity-35 hover:opacity-100"
-                  )}
-                >
-                  <div
-                    style={{
-                      backgroundColor: soundpack.color,
-                    }}
-                    className="rounded-[50%] w-2 h-2 flex-shrink-0"
-                  ></div>
-                  <span className="font-bold">{soundpack.vendor.name} •</span>
-                  {/* <span
-                    className={cn(
-                      "rounded-[50%] border p-1 ",
-                      isSelected
-                        ? "text-green-400 border-green-400 bg-green-100"
-                        : "text-neutral-400 border-neutral-400 bg-neutral-100"
-                    )}
-                  >
-                    {isSelected ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4 icon-tabler icon-tabler-check"
-                        width="44"
-                        height="44"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M5 12l5 5l10 -10" />
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4 icon-tabler icon-tabler-x"
-                        width="44"
-                        height="44"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
-                    )}
-                  </span> */}
-                  <span className="truncate">{soundpack.name}</span>
-                </button>
+                <KeyboardItems
+                  soundpack={soundpack}
+                  isSelected={isSelected}
+                  isInstalled={isInstalled}
+                  onClick={onClick(soundpack)}
+                />
+              );
+            })}
+            <Separator className="mt-4 mb-2">
+              Available ({notInstalled.length})
+            </Separator>
+
+            {notInstalled.map((soundpack) => {
+              const isSelected = selectedSoundpackId === soundpack.id;
+              const isInstalled = false;
+              return (
+                <KeyboardItems
+                  soundpack={soundpack}
+                  isSelected={isSelected}
+                  isInstalled={isInstalled}
+                  onClick={onClick(soundpack)}
+                />
               );
             })}
           </div>
           <footer className="flex flex-shrink-0 gap-2"></footer>
         </aside>
 
-        <main className="w-full h-full px-2 py-2 overflow-y-auto">
-          <div className="h-full px-8 py-8 pt-12 overflow-y-auto rounded-lg shadow-lg bg-neutral-100"></div>
+        <main className="relative w-full h-full px-2 py-2 overflow-x-hidden overflow-y-visible">
+          <img
+            className="absolute -right-32 -top-28 drop-shadow-[5px_6px_4px_rgb(88,51,35)] shadow-primary-950"
+            src={LogoImage}
+            alt=""
+          />
+
+          <div className="h-full px-8 py-8 pt-12 overflow-x-hidden overflow-y-auto rounded-lg shadow-lg bg-neutral-100 bg-gradient-to-tl from-[#d9ac92] to-[#dfb398]">
+            <header className="cursor-default select-none">
+              <h1 className="relative font-extrabold drop-shadow-sm text-primary-900 text-7xl">
+                Mechy <br /> Keyboard
+              </h1>
+              <p className="max-w-[26ch] text-primary-900 font-medium">
+                Give your keyboard a voice. Simulate the sounds of typing on a
+                mechanical keyboard.
+              </p>
+            </header>
+          </div>
+          <footer></footer>
         </main>
       </div>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          className:
+            "bg-primary-900 text-primary-200 [&__*.sonner-loading-bar]:bg-primary-100",
+          descriptionClassName: "text-primary-300",
+        }}
+      />
     </>
   );
 }

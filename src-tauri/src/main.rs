@@ -1,17 +1,17 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
 use keypress::key_code::code_from_key;
+use log::{error, trace};
 use once_cell::sync::Lazy;
 use plugins::mac_os::traffic_lights::setup_traffic_light_positioner;
 use rdev::{listen, EventType, Key};
-use tauri::async_runtime::Mutex;
-use tauri::Manager;
-use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
-
 use std::sync::Arc;
 use std::thread;
 use std::{env, path::PathBuf};
+use tauri::async_runtime::Mutex;
+use tauri::Manager;
+use tauri_plugin_log::LogTarget;
+use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
 
 pub mod constants;
 pub mod events;
@@ -40,17 +40,32 @@ static KEYS_PRESSED: Lazy<std::sync::Mutex<Vec<Key>>> =
 
 #[specta::specta]
 #[tauri::command]
-async fn choose_soundpack(soundpack_id: String, soundpack_folder: String) -> Result<(), ()> {
+async fn choose_soundpack(soundpack_id: String, soundpack_folder: String) -> Result<(), String> {
+    trace!(
+        "Choosing soundpack: {} with folder located in: {}",
+        soundpack_id,
+        soundpack_folder
+    );
     let new_soundpack_folder = PathBuf::from(soundpack_folder).join(&soundpack_id);
-    println!("New soundpack folder: {:?}", new_soundpack_folder);
-    download_soundpack_if_necessary(soundpack_id, &new_soundpack_folder).await;
+    trace!("New soundpack folder will be: {:?}", new_soundpack_folder);
+    let download_result =
+        download_soundpack_if_necessary(soundpack_id, &new_soundpack_folder).await;
+    if download_result.is_err() {
+        return Err(download_result.unwrap_err());
+    }
     let new_soundpack_sound_data = soundpacks::prepare_sound_data(&new_soundpack_folder);
     let new_soundpack_slices = soundpacks::prepare_sound_slices(&new_soundpack_folder);
-    println!("New soundpack slices: {:?}", new_soundpack_slices);
-    println!("New soundpack sound data: {:?}", new_soundpack_sound_data);
+    trace!("New soundpack slices: {:?}", new_soundpack_slices);
+    trace!("New soundpack sound data: {:?}", new_soundpack_sound_data);
     let mut soundpack_lock = SOUNDPACK.lock().await;
 
-    soundpack_lock.set_sound_data(new_soundpack_sound_data);
+    if new_soundpack_sound_data.is_err() {
+        return Err("Error preparing sounds".to_string());
+    }
+    if new_soundpack_slices.is_empty() {
+        return Err("Error preparing sound slices".to_string());
+    }
+    soundpack_lock.set_sound_data(Some(new_soundpack_sound_data.unwrap()));
     soundpack_lock.set_sound_slices(new_soundpack_slices);
 
     Ok(())
@@ -59,10 +74,16 @@ fn main() {
     #[cfg(debug_assertions)]
     ts::export(collect_types![choose_soundpack], "../src/bindings.ts").unwrap();
 
+    /*
+        Here we listen for key events and play sounds accordingly.
+
+        We also keep track of keys that are currently pressed to avoid playing the same sound multiple times when a key is held down.
+
+    */
     thread::spawn(|| {
+        trace!("Key listener thread spawned");
         if let Err(error) = listen(move |event| match event.event_type {
             EventType::KeyRelease(key) => {
-                println!("Key release {:?}", key);
                 let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
                 keys_pressed_lock.retain(|&x| x != key);
                 tauri::async_runtime::block_on(async {
@@ -70,7 +91,6 @@ fn main() {
                 });
             }
             EventType::KeyPress(key) => {
-                println!("Keys pressed: {:?}", key);
                 let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
                 if keys_pressed_lock.contains(&key) {
                     drop(keys_pressed_lock);
@@ -79,7 +99,6 @@ fn main() {
                     keys_pressed_lock.push(key);
                     drop(keys_pressed_lock);
                 }
-                println!("Key press {:?}", key);
 
                 tauri::async_runtime::block_on(async {
                     SOUNDPACK.lock().await.play_sound(code_from_key(key), false);
@@ -87,7 +106,7 @@ fn main() {
             }
             _ => {}
         }) {
-            println!("Error: {:?}", error)
+            error!("Error: {:?}", error)
         }
     });
     tauri::Builder::default()
@@ -113,6 +132,11 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![choose_soundpack])
         .plugin(plugins::mac_os::traffic_lights::init())
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
+                .build(),
+        )
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

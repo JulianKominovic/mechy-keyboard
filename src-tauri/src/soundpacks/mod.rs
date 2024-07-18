@@ -1,9 +1,10 @@
 use kira::{
     manager::{AudioManager, DefaultBackend},
-    sound::{self, static_sound::StaticSoundData, PlaybackPosition, PlaybackRate},
+    sound::{self, static_sound::StaticSoundData, FromFileError, PlaybackPosition, PlaybackRate},
     tween::{Easing, Tween},
     StartTime, Volume,
 };
+use log::{error, trace};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
@@ -37,8 +38,8 @@ impl Soundpack {
         }
     }
 
-    pub fn set_sound_data(&mut self, sound_data: StaticSoundData) {
-        self.sound_data = Some(sound_data);
+    pub fn set_sound_data(&mut self, sound_data: Option<StaticSoundData>) {
+        self.sound_data = sound_data;
     }
 
     pub fn set_sound_slices(&mut self, sound_slices: HashMap<i32, (i32, i32)>) {
@@ -49,10 +50,7 @@ impl Soundpack {
     }
 
     pub fn play_sound(&self, key: Option<i32>, reversed: bool) {
-        let key = key.unwrap_or_else(|| {
-            println!("Key {:?} not found in soundpack, playing random sound", key);
-            1
-        });
+        let key = key.unwrap_or_else(|| 1);
         if let Some(ranges) = self.sound_slices.get(&key) {
             let (start, end) = ranges;
             let start_seconds =
@@ -90,10 +88,28 @@ impl Soundpack {
 }
 
 pub fn prepare_sound_slices(soundpack_folder: &PathBuf) -> HashMap<i32, (i32, i32)> {
-    let json_file_content = std::fs::read_to_string(soundpack_folder.join("config.json"))
-        .expect("Something went wrong reading the file");
-    let json: ConfigStruct =
-        serde_json::from_str(json_file_content.as_str()).expect("JSON was not well-formatted");
+    let json_file_content = match std::fs::read_to_string(soundpack_folder.join("config.json")) {
+        Ok(content) => content,
+        Err(e) => {
+            error!(
+                "Error reading config.json from {:?}: {:?}",
+                soundpack_folder, e
+            );
+            return HashMap::new();
+        }
+    };
+
+    let json: ConfigStruct = match serde_json::from_str(json_file_content.as_str()) {
+        Ok(json) => json,
+        Err(e) => {
+            error!(
+                "Error parsing config.json from {:?}: {:?}",
+                soundpack_folder, e
+            );
+            return HashMap::new();
+        }
+    };
+
     let mut sound_slices = HashMap::new();
     for (k, v) in json.defines.iter() {
         if let Some(v) = v {
@@ -103,30 +119,55 @@ pub fn prepare_sound_slices(soundpack_folder: &PathBuf) -> HashMap<i32, (i32, i3
     sound_slices
 }
 
-pub fn prepare_sound_data(soundpack_folder: &PathBuf) -> StaticSoundData {
+pub fn prepare_sound_data(soundpack_folder: &PathBuf) -> Result<StaticSoundData, FromFileError> {
     let ogg_file = soundpack_folder.join("sound.ogg");
-    StaticSoundData::from_file(ogg_file).unwrap()
+    StaticSoundData::from_file(ogg_file)
 }
 
 pub async fn download_soundpack_if_necessary(
     soundpack_id: String,
     soundpack_destination: &PathBuf,
-) {
-    println!("Checking if soundpack exists: {:?}", soundpack_destination);
+) -> Result<(), String> {
+    trace!("Checking if soundpack exists: {:?}", soundpack_destination);
     if soundpack_destination.exists() {
         println!("Soundpack already exists, skipping download");
-        return;
+        return Ok(());
     }
-    println!("Soundpack does not exist, downloading");
+    trace!("Soundpack does not exist, downloading");
     let zip_file_url = format!("{}/{}.zip", REMOTE_SOUNDPACK_DIRECTORY, soundpack_id);
-    println!("Downloading soundpack: {}", zip_file_url);
-    let body = reqwest::get(zip_file_url)
-        .await
-        .unwrap()
-        .bytes()
-        .await
-        .unwrap();
+    trace!("Downloading soundpack: {}", zip_file_url);
+    let body = if let Ok(body) = reqwest::get(&zip_file_url).await {
+        body
+    } else {
+        let error = format!("Error downloading soundpack GET {}", zip_file_url);
+        trace!("{error}");
+        return Err(error);
+    };
+    trace!("Downloaded file, getting bytes");
+    let body = if let Ok(bytes) = body.bytes().await {
+        bytes
+    } else {
+        let error = "Error getting bytes from response".to_string();
+        trace!("{error}");
+        return Err(error);
+    };
+    trace!("Creating soundpack destination directory");
+    let create_dir_result = fs::create_dir_all(soundpack_destination);
+    if create_dir_result.is_err() {
+        let error = format!(
+            "Error creating soundpack destination directory: {:?}",
+            soundpack_destination
+        );
+        trace!("{error}");
+        return Err(error);
+    }
 
-    fs::create_dir_all(soundpack_destination).unwrap();
-    zip_extract::extract(Cursor::new(body), soundpack_destination, true).unwrap();
+    trace!("Extracting zip file");
+    let extracted_zip_result = zip_extract::extract(Cursor::new(body), soundpack_destination, true);
+    if extracted_zip_result.is_err() {
+        let error = format!("Error extracting zip file");
+        trace!("{} {:?}", error, extracted_zip_result.unwrap_err());
+        return Err(error);
+    }
+    Ok(())
 }
