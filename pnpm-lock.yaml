@@ -17,6 +17,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      unzipit:
+        specifier: ^1.4.3
+        version: 1.4.3
     devDependencies:
       '@tauri-apps/cli':
         specifier: ^1.5.6
@@ -32,7 +35,7 @@ importers:
         version: 18.2.14
       '@vitejs/plugin-react':
         specifier: ^4.0.3
-        version: 4.1.1(vite@4.5.0)
+        version: 4.1.1(vite@4.5.0(@types/node@20.10.5)(lightningcss@1.22.1))
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.16(postcss@8.4.31)
@@ -53,7 +56,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.4
-        version: 4.5.0(@types/node@20.10.5)
+        version: 4.5.0(@types/node@20.10.5)(lightningcss@1.22.1)
 
 packages:
 
@@ -1026,6 +1029,10 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
+  unzipit@1.4.3:
+    resolution: {integrity: sha512-gsq2PdJIWWGhx5kcdWStvNWit9FVdTewm4SEG7gFskWs+XCVaULt9+BwuoBtJiRE8eo3L1IPAOrbByNLtLtIlg==}
+    engines: {node: '>=12'}
+
   update-browserslist-db@1.0.13:
     resolution: {integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg==}
     hasBin: true
@@ -1034,6 +1041,9 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  uzip-module@1.0.3:
+    resolution: {integrity: sha512-AMqwWZaknLM77G+VPYNZLEruMGWGzyigPK3/Whg99B3S6vGHuqsyl5ZrOv1UUF3paGK1U6PM0cnayioaryg/fA==}
 
   vite@4.5.0:
     resolution: {integrity: sha512-ulr8rNLA6rkyFAlVWw2q5YJ91v098AFQ2R0PRFwPzREXOUJQPtFUG0t+/ZikhaOCDqFoDhN6/v8Sq0o4araFAw==}
@@ -1437,14 +1447,14 @@ snapshots:
 
   '@types/scheduler@0.16.5': {}
 
-  '@vitejs/plugin-react@4.1.1(vite@4.5.0)':
+  '@vitejs/plugin-react@4.1.1(vite@4.5.0(@types/node@20.10.5)(lightningcss@1.22.1))':
     dependencies:
       '@babel/core': 7.23.2
       '@babel/plugin-transform-react-jsx-self': 7.22.5(@babel/core@7.23.2)
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.23.2)
       '@types/babel__core': 7.20.3
       react-refresh: 0.14.0
-      vite: 4.5.0(@types/node@20.10.5)
+      vite: 4.5.0(@types/node@20.10.5)(lightningcss@1.22.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -1826,8 +1836,9 @@ snapshots:
   postcss-load-config@4.0.2(postcss@8.4.31):
     dependencies:
       lilconfig: 3.0.0
-      postcss: 8.4.31
       yaml: 2.3.4
+    optionalDependencies:
+      postcss: 8.4.31
 
   postcss-nested@6.0.1(postcss@8.4.31):
     dependencies:
@@ -1960,6 +1971,10 @@ snapshots:
 
   undici-types@5.26.5: {}
 
+  unzipit@1.4.3:
+    dependencies:
+      uzip-module: 1.0.3
+
   update-browserslist-db@1.0.13(browserslist@4.22.1):
     dependencies:
       browserslist: 4.22.1
@@ -1974,14 +1989,17 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite@4.5.0(@types/node@20.10.5):
+  uzip-module@1.0.3: {}
+
+  vite@4.5.0(@types/node@20.10.5)(lightningcss@1.22.1):
     dependencies:
-      '@types/node': 20.10.5
       esbuild: 0.18.20
       postcss: 8.4.31
       rollup: 3.29.4
     optionalDependencies:
+      '@types/node': 20.10.5
       fsevents: 2.3.3
+      lightningcss: 1.22.1
 
   wrappy@1.0.2: {}
 

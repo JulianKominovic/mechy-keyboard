@@ -30,23 +30,15 @@ extern crate cocoa;
 #[macro_use]
 extern crate objc;
 
-static SOUNDPACK: Lazy<Arc<Mutex<Soundpack>>> = Lazy::new(|| {
-    Arc::new(Mutex::new(Soundpack::new(
-        env::home_dir()
-            .unwrap()
-            .join("dev/the-cheapest-mechanical-keyboard/soundpacks/cherrymx-black-abs")
-            .to_str()
-            .unwrap()
-            .to_string(),
-    )))
-});
+static SOUNDPACK: Lazy<Arc<Mutex<Soundpack>>> =
+    Lazy::new(|| Arc::new(Mutex::new(Soundpack::new())));
 
 static KEYS_PRESSED: Lazy<Mutex<Vec<Key>>> = Lazy::new(|| Mutex::new(Vec::new()));
 
 #[tauri::command]
-#[specta::specta] // <-- This bit here
-fn choose_soundpack(id: String) {
-    SOUNDPACK.lock().unwrap().choose_soundpack(id);
+#[specta::specta]
+fn choose_soundpack(file_path: String) {
+    SOUNDPACK.lock().unwrap().choose_soundpack(file_path);
 }
 fn main() {
     #[cfg(debug_assertions)]

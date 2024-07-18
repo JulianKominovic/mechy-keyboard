@@ -1,9 +1,15 @@
+import { appCacheDir, appConfigDir } from "@tauri-apps/api/path";
 import CherryLogo from "./assets/CherryLogo";
 import EverglideLogo from "./assets/EverglideLogo";
 import GloriousLogo from "./assets/GloriousLogo";
 import IBMLogo from "./assets/IBMLogo";
 import NovelKeysLogo from "./assets/NovelKeysLogo";
 import TopreLogo from "./assets/TopreLogo";
+import { join } from "@tauri-apps/api/path";
+
+export const APP_CACHE_DIR = await appCacheDir();
+export const APP_CONFIG_DIR = await appConfigDir();
+export const SOUNDPACKS_DIR = await join(APP_CACHE_DIR, "soundpacks");
 
 type KeyboardModel = {
   name: string;

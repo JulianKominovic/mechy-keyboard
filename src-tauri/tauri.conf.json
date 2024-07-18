@@ -63,13 +63,8 @@
         "removeDir": false,
         "removeFile": false,
         "renameFile": false,
-        "scope": ["$APPDATA/**/*"],
-        "writeFile": false
-      },
-      "protocol": {
-        "all": true,
-        "asset": true,
-        "assetScope": ["**"]
+        "scope": ["$APPDATA/**/*", "$CACHE/**/*"],
+        "writeFile": true
       }
     },
 

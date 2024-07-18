@@ -1,3 +1,4 @@
+import { chooseSoundpack } from "./bindings";
 import { KEYBOARD_MODELS } from "./const";
 
 function cn(...classNames: any[]) {
@@ -31,6 +32,9 @@ function App() {
               const isSelected = false;
               return (
                 <button
+                  onClick={() => {
+                    chooseSoundpack(soundpack.id);
+                  }}
                   key={soundpack.id}
                   className={cn(
                     "flex items-center text-left w-full h-8 gap-2 hover:bg-black/10 text-xs rounded-lg px-2 text-ellipsis truncate",
