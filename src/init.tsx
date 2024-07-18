@@ -9,7 +9,10 @@ import TopreLogo from "./assets/TopreLogo";
 import { join } from "@tauri-apps/api/path";
 import { info, warn } from "tauri-plugin-log-api";
 import { getSoundpacksInstalled } from "./integration/soundpacks";
-
+import { version, homepage, repository } from "../package.json";
+export const VERSION = version;
+export const GITHUB_REPO = repository;
+export const HOMEPAGE = homepage;
 export const APP_CACHE_DIR = await appCacheDir();
 export const APP_CONFIG_DIR = await appConfigDir();
 export const APP_LOG_DIR = await appLogDir();

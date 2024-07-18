@@ -1,10 +1,12 @@
 import { Toaster, toast } from "sonner";
-
+import { StarFour } from "@phosphor-icons/react";
 import {
   DEFAULT_SOUNDPACK,
+  GITHUB_REPO,
   KEYBOARD_MODELS,
   LOCAL_STORAGE_SOUNDPACK_KEY,
   SOUNDPACKS_INSTALLED,
+  VERSION,
 } from "./init";
 import { changeSoundpack } from "./integration/soundpacks";
 import LogoImage from "./assets/logo-transparent.png";
@@ -111,12 +113,6 @@ function App() {
     }
   }, []);
 
-  console.log({
-    installedSoundpacksIds,
-    selectedSoundpackId,
-    alreadyInstalled,
-    notInstalled,
-  });
   return (
     <>
       <nav
@@ -183,6 +179,14 @@ function App() {
 
           <div className="h-full px-8 py-8 pt-12 overflow-x-hidden overflow-y-auto rounded-lg shadow-lg bg-neutral-100 bg-gradient-to-tl from-[#d9ac92] to-[#dfb398]">
             <header className="cursor-default select-none">
+              <a
+                target="_blank"
+                href={GITHUB_REPO + "/releases/tag/" + VERSION}
+                className="relative z-10 inline-flex items-center gap-1 px-1.5 py-0.5 text-xs rounded-full bg-primary-900 group text-primary-200"
+              >
+                <StarFour className="inline-block" weight="fill" /> Version{" "}
+                {VERSION} is here!
+              </a>
               <h1 className="relative font-extrabold drop-shadow-sm text-primary-900 text-7xl">
                 Mechy <br /> Keyboard
               </h1>
