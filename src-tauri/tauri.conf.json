@@ -56,14 +56,14 @@
       "fs": {
         "all": false,
         "copyFile": false,
-        "createDir": false,
-        "exists": false,
+        "createDir": true,
+        "exists": true,
         "readDir": true,
-        "readFile": true,
+        "readFile": false,
         "removeDir": false,
         "removeFile": false,
         "renameFile": false,
-        "scope": ["$APPDATA/**/*", "$CACHE/**/*"],
+        "scope": ["$APPDATA/**/*", "$APPCACHE/**/*", "$APPLOG/**/*"],
         "writeFile": true
       }
     },

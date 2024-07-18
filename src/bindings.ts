@@ -10,8 +10,8 @@ declare global {
 // Function avoids 'window not defined' in SSR
 const invoke = () => window.__TAURI_INVOKE__;
 
-export function chooseSoundpack(filePath: string) {
-    return invoke()<null>("choose_soundpack", { filePath })
+export function chooseSoundpack(soundpackId: string, soundpackFolder: string) {
+    return invoke()<null>("choose_soundpack", { soundpackId,soundpackFolder })
 }
 
 

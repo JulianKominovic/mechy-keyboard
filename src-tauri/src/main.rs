@@ -5,20 +5,22 @@ use keypress::key_code::code_from_key;
 use once_cell::sync::Lazy;
 use plugins::mac_os::traffic_lights::setup_traffic_light_positioner;
 use rdev::{listen, EventType, Key};
+use tauri::async_runtime::Mutex;
 use tauri::Manager;
 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
 
-use std::env;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use std::thread;
+use std::{env, path::PathBuf};
 
+pub mod constants;
 pub mod events;
 pub mod keypress;
 pub mod plugins;
 pub mod soundpacks;
 pub mod utils;
 
-use soundpacks::Soundpack;
+use soundpacks::{download_soundpack_if_necessary, Soundpack};
 use specta::collect_types;
 use tauri_specta::ts;
 
@@ -33,12 +35,25 @@ extern crate objc;
 static SOUNDPACK: Lazy<Arc<Mutex<Soundpack>>> =
     Lazy::new(|| Arc::new(Mutex::new(Soundpack::new())));
 
-static KEYS_PRESSED: Lazy<Mutex<Vec<Key>>> = Lazy::new(|| Mutex::new(Vec::new()));
+static KEYS_PRESSED: Lazy<std::sync::Mutex<Vec<Key>>> =
+    Lazy::new(|| std::sync::Mutex::new(Vec::new()));
 
-#[tauri::command]
 #[specta::specta]
-fn choose_soundpack(file_path: String) {
-    SOUNDPACK.lock().unwrap().choose_soundpack(file_path);
+#[tauri::command]
+async fn choose_soundpack(soundpack_id: String, soundpack_folder: String) -> Result<(), ()> {
+    let new_soundpack_folder = PathBuf::from(soundpack_folder).join(&soundpack_id);
+    println!("New soundpack folder: {:?}", new_soundpack_folder);
+    download_soundpack_if_necessary(soundpack_id, &new_soundpack_folder).await;
+    let new_soundpack_sound_data = soundpacks::prepare_sound_data(&new_soundpack_folder);
+    let new_soundpack_slices = soundpacks::prepare_sound_slices(&new_soundpack_folder);
+    println!("New soundpack slices: {:?}", new_soundpack_slices);
+    println!("New soundpack sound data: {:?}", new_soundpack_sound_data);
+    let mut soundpack_lock = SOUNDPACK.lock().await;
+
+    soundpack_lock.set_sound_data(new_soundpack_sound_data);
+    soundpack_lock.set_sound_slices(new_soundpack_slices);
+
+    Ok(())
 }
 fn main() {
     #[cfg(debug_assertions)]
@@ -50,6 +65,9 @@ fn main() {
                 println!("Key release {:?}", key);
                 let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
                 keys_pressed_lock.retain(|&x| x != key);
+                tauri::async_runtime::block_on(async {
+                    SOUNDPACK.lock().await.play_sound(code_from_key(key), true);
+                });
             }
             EventType::KeyPress(key) => {
                 println!("Keys pressed: {:?}", key);
@@ -63,7 +81,9 @@ fn main() {
                 }
                 println!("Key press {:?}", key);
 
-                SOUNDPACK.lock().unwrap().play_sound(code_from_key(key));
+                tauri::async_runtime::block_on(async {
+                    SOUNDPACK.lock().await.play_sound(code_from_key(key), false);
+                });
             }
             _ => {}
         }) {

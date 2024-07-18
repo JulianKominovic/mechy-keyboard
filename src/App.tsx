@@ -1,5 +1,11 @@
-import { chooseSoundpack } from "./bindings";
+import { Toaster, toast } from "sonner";
+
 import { KEYBOARD_MODELS } from "./const";
+import {
+  changeSoundpack,
+  getSoundpacksInstalled,
+} from "./integration/soundpacks";
+const installedSoundpacks = await getSoundpacksInstalled();
 
 function cn(...classNames: any[]) {
   return classNames.filter((e) => e).join(" ");
@@ -28,17 +34,29 @@ function App() {
           )}
         >
           <div className="flex-grow">
-            {KEYBOARD_MODELS.map((soundpack) => {
+            {KEYBOARD_MODELS.sort((a, b) => {
+              if (installedSoundpacks.includes(a.id)) return -1;
+              if (installedSoundpacks.includes(b.id)) return 1;
+              return 0;
+            }).map((soundpack) => {
               const isSelected = false;
+              const isInstalled = installedSoundpacks.includes(soundpack.id);
               return (
                 <button
                   onClick={() => {
-                    chooseSoundpack(soundpack.id);
+                    toast.promise(changeSoundpack(soundpack.id), {
+                      important: true,
+                      loading: `${
+                        isInstalled ? "Switching" : "Downloading"
+                      } to ${soundpack.name}...`,
+                      success: `Now using ${soundpack.name}`,
+                      error: `Failed to switch to ${soundpack.name}`,
+                    });
                   }}
                   key={soundpack.id}
                   className={cn(
-                    "flex items-center text-left w-full h-8 gap-2 hover:bg-black/10 text-xs rounded-lg px-2 text-ellipsis truncate",
-                    isSelected ? "opacity-100" : "opacity-45 hover:opacity-100"
+                    "flex items-center text-left w-full h-8 gap-2 text-black/60 hover:bg-black/10 text-xs rounded-lg px-2 text-ellipsis truncate",
+                    isInstalled ? "opacity-100" : "opacity-35 hover:opacity-100"
                   )}
                 >
                   <div
@@ -103,6 +121,7 @@ function App() {
           <div className="h-full px-8 py-8 pt-12 overflow-y-auto rounded-lg shadow-lg bg-neutral-100"></div>
         </main>
       </div>
+      <Toaster />
     </>
   );
 }

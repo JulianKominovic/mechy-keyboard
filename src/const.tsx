@@ -1,4 +1,5 @@
-import { appCacheDir, appConfigDir } from "@tauri-apps/api/path";
+import { appCacheDir, appConfigDir, appLogDir } from "@tauri-apps/api/path";
+import { createDir } from "@tauri-apps/api/fs";
 import CherryLogo from "./assets/CherryLogo";
 import EverglideLogo from "./assets/EverglideLogo";
 import GloriousLogo from "./assets/GloriousLogo";
@@ -9,7 +10,18 @@ import { join } from "@tauri-apps/api/path";
 
 export const APP_CACHE_DIR = await appCacheDir();
 export const APP_CONFIG_DIR = await appConfigDir();
+export const APP_LOG_DIR = await appLogDir();
 export const SOUNDPACKS_DIR = await join(APP_CACHE_DIR, "soundpacks");
+await createDir(APP_CACHE_DIR).catch(() => {});
+await createDir(APP_CONFIG_DIR).catch(() => {});
+await createDir(SOUNDPACKS_DIR).catch(() => {});
+
+console.log({
+  APP_CACHE_DIR,
+  APP_CONFIG_DIR,
+  APP_LOG_DIR,
+  SOUNDPACKS_DIR,
+});
 
 type KeyboardModel = {
   name: string;
@@ -22,6 +34,7 @@ type KeyboardModel = {
   };
   color: `#${string}`;
 };
+
 export const KEYBOARD_MODELS: KeyboardModel[] = [
   {
     name: "Black - ABS keycaps",

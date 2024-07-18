@@ -13,7 +13,8 @@
     "@tauri-apps/api": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "unzipit": "^1.4.3"
+    "sonner": "^1.5.0",
+    "ts-results": "^3.3.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.6",
@@ -26,6 +27,7 @@
     "node-html-parser": "^6.1.12",
     "postcss": "^8.4.31",
     "tailwindcss": "0.0.0-insiders.db58469",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vite": "^4.4.4"
   }
