@@ -1,19 +1,13 @@
 use kira::{
     manager::{AudioManager, DefaultBackend},
-    sound::{self, static_sound::StaticSoundData, FromFileError, PlaybackPosition, PlaybackRate},
+    sound::{static_sound::StaticSoundData, FromFileError, PlaybackPosition, PlaybackRate},
     tween::{Easing, Tween},
     StartTime, Volume,
 };
 use log::{error, trace};
 use rdev::Key;
 use serde::{Deserialize, Serialize};
-use std::{
-    collections::HashMap,
-    fs,
-    io::Cursor,
-    path::{Path, PathBuf},
-    time::Duration,
-};
+use std::{collections::HashMap, fs, io::Cursor, path::PathBuf, time::Duration};
 
 use crate::{
     constants::REMOTE_SOUNDPACK_DIRECTORY,

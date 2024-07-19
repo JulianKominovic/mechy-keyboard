@@ -202,7 +202,7 @@ function App() {
       <Toaster
         toastOptions={{
           className:
-            "bg-primary-900 text-primary-200 [&__*.sonner-loading-bar]:bg-primary-100",
+            "bg-primary-900 text-primary-100 [&__*.sonner-loading-bar]:bg-primary-100",
           descriptionClassName: "text-primary-300",
         }}
       />

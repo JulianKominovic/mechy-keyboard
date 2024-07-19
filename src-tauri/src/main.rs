@@ -81,15 +81,7 @@ fn main() {
 
     */
     thread::spawn(|| {
-        trace!("Key listener thread spawned");
         if let Err(error) = listen(move |event| match event.event_type {
-            EventType::KeyRelease(key) => {
-                let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
-                keys_pressed_lock.retain(|&x| x != key);
-                tauri::async_runtime::block_on(async {
-                    SOUNDPACK.lock().await.play_sound(key, true);
-                });
-            }
             EventType::KeyPress(key) => {
                 let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
                 if keys_pressed_lock.contains(&key) {
@@ -102,6 +94,13 @@ fn main() {
 
                 tauri::async_runtime::block_on(async {
                     SOUNDPACK.lock().await.play_sound(key, false);
+                });
+            }
+            EventType::KeyRelease(key) => {
+                let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
+                keys_pressed_lock.retain(|&x| x != key);
+                tauri::async_runtime::block_on(async {
+                    SOUNDPACK.lock().await.play_sound(key, true);
                 });
             }
             _ => {}
