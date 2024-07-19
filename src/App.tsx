@@ -182,7 +182,7 @@ function App() {
               <a
                 target="_blank"
                 href={GITHUB_REPO + "/releases/tag/" + VERSION}
-                className="relative z-10 inline-flex items-center gap-1 px-1.5 py-0.5 text-xs rounded-full bg-primary-900 group text-primary-200"
+                className="relative z-10 inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded-full bg-primary-900 group text-primary-200"
               >
                 <StarFour className="inline-block" weight="fill" /> Version{" "}
                 {VERSION} is here!
@@ -190,7 +190,7 @@ function App() {
               <h1 className="relative font-extrabold drop-shadow-sm text-primary-900 text-7xl">
                 Mechy <br /> Keyboard
               </h1>
-              <p className="max-w-[26ch] text-primary-900 font-medium">
+              <p className="mt-1 max-w-[26ch] text-primary-900 font-medium">
                 Give your keyboard a voice. Simulate the sounds of typing on a
                 mechanical keyboard.
               </p>

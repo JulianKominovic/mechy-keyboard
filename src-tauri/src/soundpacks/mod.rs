@@ -5,6 +5,7 @@ use kira::{
     StartTime, Volume,
 };
 use log::{error, trace};
+use rdev::Key;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
@@ -14,7 +15,11 @@ use std::{
     time::Duration,
 };
 
-use crate::{constants::REMOTE_SOUNDPACK_DIRECTORY, utils};
+use crate::{
+    constants::REMOTE_SOUNDPACK_DIRECTORY,
+    keypress::key_code::{code_from_key, get_panning_from_key_location},
+    utils,
+};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -49,9 +54,10 @@ impl Soundpack {
         self.id = id;
     }
 
-    pub fn play_sound(&self, key: Option<i32>, reversed: bool) {
-        let key = key.unwrap_or_else(|| 1);
-        if let Some(ranges) = self.sound_slices.get(&key) {
+    pub fn play_sound(&self, key: Key, reversed: bool) {
+        let key_code = code_from_key(key).unwrap_or_else(|| 1);
+        let panning_from_key = get_panning_from_key_location(key);
+        if let Some(ranges) = self.sound_slices.get(&key_code) {
             let (start, end) = ranges;
             let start_seconds =
                 PlaybackPosition::Seconds(Duration::from_millis(*start as u64).as_secs_f64());
@@ -68,9 +74,10 @@ impl Soundpack {
             let slice = slice.playback_rate(PlaybackRate::Factor(utils::get_random_f32_between(
                 0.9, 1.1,
             ) as f64));
+            let slice = slice.panning(panning_from_key);
             let slice = if reversed {
                 slice.volume(Volume::Amplitude(
-                    utils::get_random_f32_between(0.1, 0.3) as f64
+                    utils::get_random_f32_between(0.1, 0.2) as f64
                 ))
             } else {
                 slice.volume(Volume::Amplitude(

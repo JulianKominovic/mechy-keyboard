@@ -87,7 +87,7 @@ fn main() {
                 let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
                 keys_pressed_lock.retain(|&x| x != key);
                 tauri::async_runtime::block_on(async {
-                    SOUNDPACK.lock().await.play_sound(code_from_key(key), true);
+                    SOUNDPACK.lock().await.play_sound(key, true);
                 });
             }
             EventType::KeyPress(key) => {
@@ -101,7 +101,7 @@ fn main() {
                 }
 
                 tauri::async_runtime::block_on(async {
-                    SOUNDPACK.lock().await.play_sound(code_from_key(key), false);
+                    SOUNDPACK.lock().await.play_sound(key, false);
                 });
             }
             _ => {}
