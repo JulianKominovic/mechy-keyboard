@@ -32,7 +32,7 @@ Thanks to [Mechvibes](https://mechvibes.com/sound-packs/) soundpacks for the ama
 - [x] Glorious panda
 - [x] Model FXT
 - [x] Topre Purple Hybrid - PBT keycaps
-- [] More to come!
+- [ ] More to come!
 
 ### 🚫🔊📦 No pre-installed soundpacks
 
@@ -75,42 +75,42 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 
 ## Checklist
 
-- [] Support newer Mechvibes soundpack schemas
-- [] Add new soundpacks
-- [] Give credit to the soundpacks authors
+- [ ] Support newer Mechvibes soundpack schemas
+- [ ] Add new soundpacks
+- [ ] Give credit to the soundpacks authors
 - [x] Use standard folders
   - [x] logs
   - [x] app data
   - [x] app cache
 - [x] Download soundpacks from CDN
-- [] Click sounds
+- [ ] Click sounds
 - [x] Change the soundpack
-- [] Change the volume
-- [] Random mode: mixup a bunch of soundpacks
+- [ ] Change the volume
+- [ ] Random mode: mixup a bunch of soundpacks
 - [x] Key up sound
 - [x] 3D sound
 - [x] Key press variation
 - [x] Key down sound
-- [] Shortcut for muting
-- [] Shortcut for changing soundpack
-- [] Shortcut for changing volume
-- [] Tray icon
-- [] Minimize to tray
-- [] Implement menubar features (like changing soundpack, volume, etc) on macOS
-- [] Open on startup
-- [] Block internet access
-- [] Think about a way to block the app from accessing the internet (if possible)
-- [] Add soundpacks metadata
-- [] Implement tags
-- [] Implement search
-- [] Implement sorting
-- [] Test on Windows
-- [] Test on Linux
+- [ ] Shortcut for muting
+- [ ] Shortcut for changing soundpack
+- [ ] Shortcut for changing volume
+- [ ] Tray icon
+- [ ] Minimize to tray
+- [ ] Implement menubar features (like changing soundpack, volume, etc) on macOS
+- [ ] Open on startup
+- [ ] Block internet access
+- [ ] Think about a way to block the app from accessing the internet (if possible)
+- [ ] Add soundpacks metadata
+- [ ] Implement tags
+- [ ] Implement search
+- [ ] Implement sorting
+- [ ] Test on Windows
+- [ ] Test on Linux
 - [x] Test on macOS
-- [] Reduce the app size
-- [] Optimize the app
-- [] Add a way to report bugs
-- [] Add a way to request features
+- [ ] Reduce the app size
+- [ ] Optimize the app
+- [ ] Add a way to report bugs
+- [ ] Add a way to request features
 
 ## Technical details
 
