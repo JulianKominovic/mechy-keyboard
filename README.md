@@ -1,4 +1,7 @@
-# Mechy Keyboard
+
+
+![github og image (1)](https://github.com/user-attachments/assets/7f74037c-a5cb-4624-bf3d-e26a5ebe018e)
+
 
 ## Features
 
