@@ -1,10 +1,12 @@
 import clsx from "clsx";
 import { Keys } from "../utils/keymaps";
+import { useId } from "react";
 type Props = {
   keys: (typeof Keys | JSX.Element | string)[];
 } & React.HTMLAttributes<HTMLElement>;
 
 const Shortcut = ({ keys, ...rest }: Props) => {
+  const id = useId();
   return (
     <kbd
       {...rest}
@@ -13,8 +15,10 @@ const Shortcut = ({ keys, ...rest }: Props) => {
         rest.className
       )}
     >
-      {keys.map((k) => (
-        <span className="w-[14px]">{k as any}</span>
+      {keys.map((k, i) => (
+        <span key={id + i} className="w-[14px]">
+          {k as any}
+        </span>
       ))}
     </kbd>
   );

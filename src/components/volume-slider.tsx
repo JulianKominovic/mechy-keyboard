@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useDeferredValue, useEffect, useRef } from "react";
 import useLocalStorage from "use-local-storage";
 import {
   LOCAL_STORAGE_VOLUME_KEY,
@@ -22,8 +22,11 @@ import { error } from "tauri-plugin-log-api";
 import { Keys } from "../utils/keymaps";
 import Shortcut from "./shortcut";
 
-function registerKeyboardShortcut(shortcut: string, callback: () => void) {
-  unregister(shortcut)
+async function registerKeyboardShortcut(
+  shortcut: string,
+  callback: () => void
+) {
+  await unregister(shortcut)
     .then(() => {
       register(shortcut, callback).catch((err) => {
         toast.warning("Error registering shortcut", {
@@ -83,6 +86,7 @@ const VolumeSlider = () => {
     },
     [value, previousValueBeforeMute]
   );
+  const deferredValue = useDeferredValue(value);
   useEffect(() => {
     let unregisterMuteShortcut = registerKeyboardShortcut(
       MUTE_SHORTCUT,
@@ -102,19 +106,18 @@ const VolumeSlider = () => {
     );
 
     return () => {
-      unregisterMuteShortcut();
-      unregisterVolumeUpShortcut();
-      unregisterVolumeDownShortcut();
+      unregisterMuteShortcut.then((fn) => fn());
+      unregisterVolumeUpShortcut.then((fn) => fn());
+      unregisterVolumeDownShortcut.then((fn) => fn());
     };
-  }, [toggleMute]);
+  }, [deferredValue]);
 
   useEffect(() => {
-    console.log("Setting volume to", value);
     setVolume(value);
   }, []);
 
   return (
-    <fieldset className="select-none h-11 text-primary-800">
+    <fieldset className="relative z-10 select-none text-primary-800">
       <label
         htmlFor="volume"
         className="block text-sm font-semibold leading-tight text-primary-900 whitespace-nowrap dark:text-white"

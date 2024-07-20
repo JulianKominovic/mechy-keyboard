@@ -1,6 +1,4 @@
-import React from "react";
-
-const IBMLogo = () => {
+const IBMLogo = (props: React.HTMLAttributes<SVGElement>) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -11,6 +9,7 @@ const IBMLogo = () => {
       height="1em"
       viewBox="0 0 1000 401.149"
       enable-background="new 0 0 1000 401.149"
+      {...props}
     >
       <g>
         <g>

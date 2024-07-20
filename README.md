@@ -1,7 +1,4 @@
-
-
 ![github og image (1)](https://github.com/user-attachments/assets/7f74037c-a5cb-4624-bf3d-e26a5ebe018e)
-
 
 ## Features
 
@@ -80,7 +77,7 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 
 - [ ] Support newer Mechvibes soundpack schemas
 - [ ] Add new soundpacks
-- [ ] Give credit to the soundpacks authors
+- [x] Give credit to the soundpacks authors
 - [x] Use standard folders
   - [x] logs
   - [x] app data
@@ -88,22 +85,21 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 - [x] Download soundpacks from CDN
 - [ ] Click sounds
 - [x] Change the soundpack
-- [ ] Change the volume
+- [x] Change the volume
 - [ ] Random mode: mixup a bunch of soundpacks
 - [x] Key up sound
 - [x] 3D sound
 - [x] Key press variation
 - [x] Key down sound
-- [ ] Shortcut for muting
+- [x] Shortcut for muting
+- [x] Shortcut for changing volume
 - [ ] Shortcut for changing soundpack
-- [ ] Shortcut for changing volume
 - [ ] Tray icon
 - [ ] Minimize to tray
 - [ ] Implement menubar features (like changing soundpack, volume, etc) on macOS
 - [ ] Open on startup
 - [ ] Block internet access
-- [ ] Think about a way to block the app from accessing the internet (if possible)
-- [ ] Add soundpacks metadata
+- [x] Add soundpacks metadata
 - [ ] Implement tags
 - [ ] Implement search
 - [ ] Implement sorting

@@ -12,6 +12,7 @@ import { info, warn } from "tauri-plugin-log-api";
 import { getSoundpacksInstalled } from "./integration/soundpacks";
 import { version, homepage, repository } from "../package.json";
 import { GithubLogo, TwitterLogo } from "@phosphor-icons/react";
+import UnicompLogo from "./assets/UnicompLogo";
 
 export const SOCIAL = [
   {
@@ -61,171 +62,196 @@ info(`Default soundpack: ${DEFAULT_SOUNDPACK}`);
 
 type KeyboardModel = {
   name: string;
-  includesNumpad: boolean;
-  imageSrc: string;
   id: string;
+  imageSrc: string;
   vendor: {
-    name: "Cherry" | "Everglide" | "NovelKeys" | "Glorious" | "IBM" | "Topre";
-    logoSrc: React.ReactNode;
+    name:
+      | "Cherry"
+      | "Everglide"
+      | "NovelKeys"
+      | "Glorious"
+      | "IBM"
+      | "Topre"
+      | "Unicomp";
+    logoSrc:
+      | typeof CherryLogo
+      | typeof EverglideLogo
+      | typeof NovelKeysLogo
+      | typeof GloriousLogo
+      | typeof IBMLogo
+      | typeof TopreLogo
+      | typeof UnicompLogo;
   };
   color: `#${string}`;
+  author: "Mechvibes" | (string & {});
 };
 
 export const KEYBOARD_MODELS: KeyboardModel[] = [
   {
     name: "Black - ABS keycaps",
-    includesNumpad: false,
     imageSrc: "",
     id: "cherrymx-black-abs",
     vendor: {
       name: "Cherry",
-      logoSrc: <CherryLogo />,
+      logoSrc: CherryLogo,
     },
     color: "#000",
+    author: "Mechvibes",
   },
 
   {
     name: "Black - PBT keycaps",
-    includesNumpad: false,
     imageSrc:
       "https://mechanicalkeyboards.com/cdn/shop/files/6296-S5MVU-One-3-Matcha.jpg?v=1707861551&width=750",
     id: "cherrymx-black-pbt",
     vendor: {
       name: "Cherry",
-      logoSrc: <CherryLogo />,
+      logoSrc: CherryLogo,
     },
     color: "#414141",
+    author: "Mechvibes",
   },
   {
     name: "Blue - ABS keycaps",
-    includesNumpad: false,
     imageSrc: "",
     id: "cherrymx-blue-abs",
     vendor: {
       name: "Cherry",
-      logoSrc: <CherryLogo />,
+      logoSrc: CherryLogo,
     },
     color: "#2b75ff",
+    author: "Mechvibes",
   },
   {
     name: "Blue - PBT keycaps",
-    includesNumpad: false,
     imageSrc: "",
     id: "cherrymx-blue-pbt",
     vendor: {
       name: "Cherry",
-      logoSrc: <CherryLogo />,
+      logoSrc: CherryLogo,
     },
     color: "#6fa1ff",
+    author: "Mechvibes",
   },
   {
     name: "Brown - ABS keycaps",
-    includesNumpad: false,
     imageSrc: "",
     id: "cherrymx-brown-abs",
     vendor: {
       name: "Cherry",
-      logoSrc: <CherryLogo />,
+      logoSrc: CherryLogo,
     },
     color: "#9e4607",
+    author: "Mechvibes",
   },
   {
     name: "Brown - PBT keycaps",
-    includesNumpad: false,
     imageSrc: "",
     id: "cherrymx-brown-pbt",
     vendor: {
       name: "Cherry",
-      logoSrc: <CherryLogo />,
+      logoSrc: CherryLogo,
     },
     color: "#a86e45",
+    author: "Mechvibes",
   },
   {
     name: "Red - ABS keycaps",
-    includesNumpad: false,
     imageSrc: "",
     id: "cherrymx-red-abs",
     vendor: {
       name: "Cherry",
-      logoSrc: <CherryLogo />,
+      logoSrc: CherryLogo,
     },
     color: "#e82828",
+    author: "Mechvibes",
   },
   {
     name: "Red - PBT keycaps",
-    includesNumpad: false,
     imageSrc: "",
     id: "cherrymx-red-pbt",
     vendor: {
       name: "Cherry",
-      logoSrc: <CherryLogo />,
+      logoSrc: CherryLogo,
     },
     color: "#ff6b6b",
+    author: "Mechvibes",
   },
   {
     name: "Creams",
-    includesNumpad: false,
     imageSrc: "",
     id: "creams",
     vendor: {
       name: "NovelKeys",
-      logoSrc: <NovelKeysLogo />,
+      logoSrc: NovelKeysLogo,
     },
     color: "#ffddb6",
+    author: "Aksh Aggarwal",
   },
   {
     name: "EG Crystal Purple",
-    includesNumpad: false,
     imageSrc: "",
     id: "eg-crystal-purple",
     vendor: {
       name: "Everglide",
-      logoSrc: <EverglideLogo />,
+      logoSrc: EverglideLogo,
     },
     color: "#b39bd2",
+    author: "Mechvibes",
   },
   {
     name: "EG Oreo",
-    includesNumpad: false,
     imageSrc: "",
     id: "eg-oreo",
     vendor: {
       name: "Everglide",
-      logoSrc: <EverglideLogo />,
+      logoSrc: EverglideLogo,
     },
     color: "#3e3830",
+    author: "Mechvibes",
   },
   {
     name: "Glorious panda",
-    includesNumpad: false,
     imageSrc: "",
     id: "glorious-panda",
     vendor: {
       name: "Glorious",
-      logoSrc: <GloriousLogo />,
+      logoSrc: GloriousLogo,
     },
     color: "#f2a83e",
+    author: "prpetar17",
   },
   {
     name: "Model_F_XT",
-    includesNumpad: false,
     imageSrc: "",
     id: "model-fxt",
     vendor: {
       name: "IBM",
-      logoSrc: <IBMLogo />,
+      logoSrc: IBMLogo,
     },
     color: "#adadad",
+    author: "Rezenee",
   },
   {
-    name: "Topre Purple Hybrid - PBT keycaps",
-    includesNumpad: false,
+    name: "Purple Hybrid - PBT",
     imageSrc: "",
     id: "topre-purple-hybrid-pbt",
     vendor: {
       name: "Topre",
-      logoSrc: <TopreLogo />,
+      logoSrc: TopreLogo,
     },
     color: "#4439c4",
+    author: "Mechvibes",
+  },
+  {
+    name: "Classic",
+    imageSrc: "",
+    id: "unicompclassic",
+    vendor: {
+      name: "Unicomp",
+      logoSrc: UnicompLogo,
+    },
+    color: "#8d9473",
+    author: "Thànhh the Xignature",
   },
 ];

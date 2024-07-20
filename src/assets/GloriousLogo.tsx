@@ -1,4 +1,4 @@
-const GloriousLogo = () => {
+const GloriousLogo = (props: React.HTMLAttributes<SVGElement>) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -6,6 +6,7 @@ const GloriousLogo = () => {
       viewBox="0 0 70 47"
       height="47"
       width="70"
+      {...props}
     >
       <g clip-path="url(#clip0_2176_1340)" id="Layer_1">
         <path

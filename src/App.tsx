@@ -70,6 +70,10 @@ function App() {
     DEFAULT_SOUNDPACK
   );
 
+  const currentSoundpack = KEYBOARD_MODELS.find(
+    (keyboard) => keyboard.id === selectedSoundpackId
+  );
+
   const alreadyInstalled = KEYBOARD_MODELS.filter((model) =>
     installedSoundpacksIds.has(model.id)
   );
@@ -86,7 +90,7 @@ function App() {
       });
       changeSoundpack(soundpack.id)
         .then(() => {
-          toast.success(`Now using ${soundpack.name}`);
+          toast.success(`Now using ${soundpack.name}`, { duration: 2000 });
           setSelectedSoundpackId(soundpack.id);
           setInstalledSoundpacksIds((prev) => prev.add(soundpack.id));
           trace(`Switched to ${soundpack.name}`);
@@ -94,6 +98,7 @@ function App() {
         .catch((err) => {
           toast.error(`Failed to switch to ${soundpack.name}`, {
             description: err,
+            duration: 5000,
           });
           error(err);
         })
@@ -262,7 +267,7 @@ function App() {
           </footer>
         </aside>
 
-        <main className="relative w-full h-full px-2 py-2 overflow-x-hidden overflow-y-visible">
+        <main className="relative w-full h-full px-2 py-2 overflow-hidden">
           <div className="relative h-full px-8 py-8 pt-12 overflow-x-hidden overflow-y-auto rounded-lg shadow-lg bg-neutral-100 bg-gradient-to-tl from-[#d9ac92] to-[#dfb398]">
             <img
               className="absolute -right-32 -top-28 drop-shadow-[5px_6px_4px_rgb(88,51,35)] shadow-primary-950 select-none"
@@ -273,7 +278,7 @@ function App() {
               <a
                 target="_blank"
                 href={GITHUB_REPO + "/releases/tag/" + VERSION}
-                className="relative z-10 inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded-full bg-primary-900 group text-primary-200"
+                className="relative z-10 inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] rounded-full bg-primary-900 group text-primary-200 hover:bg-primary-900/80 transition-colors"
               >
                 <StarFour className="inline-block" weight="fill" /> Version{" "}
                 {VERSION} is here!
@@ -287,9 +292,37 @@ function App() {
               </p>
             </header>
             <Separator className="my-8 after:bg-primary-900/20 after:h-[2px]"></Separator>
-            <footer className="relative z-10 mt-10">
-              <VolumeSlider />
-            </footer>
+            <VolumeSlider />
+            <Separator className="my-8 after:bg-primary-900/20 after:h-[2px]"></Separator>
+            {currentSoundpack && (
+              <footer className="mt-10 text-primary-900">
+                <div className="flex flex-wrap items-center gap-1 text-lg">
+                  Using{" "}
+                  <div className="inline-flex items-center h-6 gap-1 p-1 overflow-hidden text-base rounded-md bg-primary-300">
+                    <span
+                      className="inline-block w-3 h-3 rounded-[4px]"
+                      style={{
+                        backgroundColor: currentSoundpack.color,
+                      }}
+                    ></span>
+                    <b className="whitespace-pre">{currentSoundpack.name}</b>
+                  </div>
+                  by{" "}
+                  <div className="inline-flex items-center h-6 gap-1 p-1 overflow-hidden text-base rounded-md bg-primary-300">
+                    {
+                      <currentSoundpack.vendor.logoSrc className="object-scale-down w-auto h-full rounded-[4px] max-w-7" />
+                    }
+                    <b className="">
+                      {currentSoundpack.vendor.name}
+                      {"™"}
+                    </b>
+                  </div>
+                </div>
+                <p className="text-sm">
+                  Thanks to <b>{currentSoundpack.author}</b> for this soundpack!
+                </p>
+              </footer>
+            )}
           </div>
         </main>
       </div>

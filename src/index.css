@@ -12,6 +12,10 @@
   *::before {
     @apply cursor-default select-none focus:outline-primary-700 focus:outline focus:outline-2 focus:outline-offset-2;
   }
+  button,
+  input[type="range"] {
+    @apply cursor-default;
+  }
   [data-sonner-toaster="true"] *::after,
   [data-sonner-toaster="true"] *::before {
     @apply focus:outline-transparent focus:outline focus:outline-2 focus:outline-offset-2;
