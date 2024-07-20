@@ -3080,7 +3080,7 @@ checksum = "f2ff9a1f06a88b01621b7ae906ef0211290d1c8a168a15542486a8f61c0833b9"
 [[package]]
 name = "rdev"
 version = "0.5.0-2"
-source = "git+https://github.com/fufesou/rdev#b3434caee84c92412b45a2f655a15ac5dad33488"
+source = "git+https://github.com/JulianKominovic/rdev?branch=fofesou-fork-macos-tauri-fixes#b3434caee84c92412b45a2f655a15ac5dad33488"
 dependencies = [
  "cocoa 0.24.1",
  "core-foundation",
