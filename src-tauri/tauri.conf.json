@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "Mechy Keyboard",
-    "version": "0.0.0"
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -26,6 +26,7 @@
         "open": "^((https?://)|(file://)).+$",
         "sidecar": false
       },
+
       "window": {
         "all": false,
         "center": false,
@@ -81,7 +82,7 @@
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
+      "category": "Productivity",
       "copyright": "",
       "deb": {
         "depends": []
@@ -106,6 +107,8 @@
       "resources": [],
       "shortDescription": "Give your keyboard a voice.",
       "targets": "all",
+
+      "publisher": "Julian Kominovic",
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",

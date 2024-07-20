@@ -1,8 +1,8 @@
 [package]
 name = "mechy-keyboard"
-version = "0.1.0"
+version = "1.0.0"
 description = "Give your keyboard a voice. Simulate the sounds of typing on a mechanical keyboard."
-authors = ["Julian Kominovic"]
+authors = ["Julian Kominovic <juliankominovic@gmail.com>"]
 license = ""
 repository = "https://github.com/JulianKominovic/mechy-keyboard"
 default-run = "mechy-keyboard"

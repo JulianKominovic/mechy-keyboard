@@ -15,7 +15,6 @@ import {
 } from "./init";
 import { changeSoundpack } from "./integration/soundpacks";
 import LogoImage from "./assets/logo-transparent.png";
-import FaviconImage from "./assets/128x128.png";
 import useLocalStorage from "use-local-storage";
 import { error, trace } from "tauri-plugin-log-api";
 import Separator from "./components/separator";
