@@ -133,7 +133,7 @@ const VolumeSlider = () => {
         >
           <Minus weight="bold" />
           <Shortcut
-            className="pl-1 border-l border-primary-900/10"
+            className="pl-1 border-l border-primary-900/20"
             keys={[
               PLATFORM === "darwin" ? Keys.MAC_COMMAND : Keys.CONTROL,
               Keys.SHIFT,
@@ -159,7 +159,7 @@ const VolumeSlider = () => {
         >
           <Plus weight="bold" />
           <Shortcut
-            className="pl-1 border-l border-primary-900/10"
+            className="pl-1 border-l border-primary-900/20"
             keys={[
               PLATFORM === "darwin" ? Keys.MAC_COMMAND : Keys.CONTROL,
               Keys.SHIFT,
@@ -196,7 +196,7 @@ const VolumeSlider = () => {
             />
           )}
           <Shortcut
-            className="pl-1 border-l border-primary-900/10"
+            className="pl-1 border-l border-primary-900/20"
             keys={[
               PLATFORM === "darwin" ? Keys.MAC_COMMAND : Keys.CONTROL,
               Keys.SHIFT,
