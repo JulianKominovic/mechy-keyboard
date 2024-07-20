@@ -107,9 +107,7 @@ function App() {
           setSelectedSoundpackId(selectedSoundpackId);
           setInstalledSoundpacksIds((prev) => prev.add(selectedSoundpackId));
         })
-        .catch((err) => {
-          error(err);
-        })
+        .catch(error)
         .finally(() => toast.dismiss(id));
     }
   }, []);
@@ -136,9 +134,11 @@ function App() {
           )}
         >
           <div className="flex-grow">
-            <Separator className="mb-2">
-              Installed ({alreadyInstalled.length})
-            </Separator>
+            {alreadyInstalled.length > 0 && (
+              <Separator className="mb-2">
+                Installed ({alreadyInstalled.length})
+              </Separator>
+            )}
             {alreadyInstalled.map((soundpack) => {
               const isSelected = selectedSoundpackId === soundpack.id;
               const isInstalled = true;
