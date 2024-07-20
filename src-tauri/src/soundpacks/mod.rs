@@ -26,6 +26,7 @@ pub struct Soundpack {
     pub sound_slices: HashMap<i32, (i32, i32)>,
     pub sound_data: Option<StaticSoundData>,
     pub id: String,
+    pub volume: f32,
 }
 
 impl Soundpack {
@@ -34,7 +35,12 @@ impl Soundpack {
             sound_slices: HashMap::new(),
             sound_data: None,
             id: String::new(),
+            volume: 0.5,
         }
+    }
+
+    pub fn set_volume(&mut self, volume: f32) {
+        self.volume = volume;
     }
 
     pub fn set_sound_data(&mut self, sound_data: Option<StaticSoundData>) {
@@ -70,13 +76,15 @@ impl Soundpack {
             ) as f64));
             let slice = slice.panning(panning_from_key);
             let slice = if reversed {
-                slice.volume(Volume::Amplitude(
-                    utils::get_random_f32_between(0.1, 0.2) as f64
-                ))
+                slice.volume(Volume::Amplitude(utils::get_random_f32_between(
+                    0.1 * self.volume,
+                    0.2 * self.volume,
+                ) as f64))
             } else {
-                slice.volume(Volume::Amplitude(
-                    utils::get_random_f32_between(0.8, 1.0) as f64
-                ))
+                slice.volume(Volume::Amplitude(utils::get_random_f32_between(
+                    0.8 * self.volume,
+                    1.0 * self.volume,
+                ) as f64))
             };
 
             sound_manager.play(slice).unwrap().stop(Tween {

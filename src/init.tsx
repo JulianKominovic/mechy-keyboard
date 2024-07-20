@@ -7,9 +7,15 @@ import IBMLogo from "./assets/IBMLogo";
 import NovelKeysLogo from "./assets/NovelKeysLogo";
 import TopreLogo from "./assets/TopreLogo";
 import { join } from "@tauri-apps/api/path";
+import { platform } from "@tauri-apps/api/os";
 import { info, warn } from "tauri-plugin-log-api";
 import { getSoundpacksInstalled } from "./integration/soundpacks";
 import { version, homepage, repository } from "../package.json";
+
+export const MUTE_SHORTCUT = "CommandOrControl+Shift+M";
+export const VOLUME_UP_SHORTCUT = "CommandOrControl+Shift+ArrowUp";
+export const VOLUME_DOWN_SHORTCUT = "CommandOrControl+Shift+ArrowDown";
+export const PLATFORM = await platform();
 export const VERSION = version;
 export const GITHUB_REPO = repository;
 export const HOMEPAGE = homepage;
@@ -34,6 +40,8 @@ export const DEFAULT_SOUNDPACK: string | undefined = await readDir(
   });
 export const SOUNDPACKS_INSTALLED = await getSoundpacksInstalled();
 export const LOCAL_STORAGE_SOUNDPACK_KEY = "selected-soundpack";
+export const LOCAL_STORAGE_VOLUME_KEY = "volume";
+
 info(`App cache dir: ${APP_CACHE_DIR}`);
 info(`App config dir: ${APP_CONFIG_DIR}`);
 info(`App log dir: ${APP_LOG_DIR}`);
@@ -64,17 +72,7 @@ export const KEYBOARD_MODELS: KeyboardModel[] = [
     },
     color: "#000",
   },
-  {
-    name: "Fake",
-    includesNumpad: false,
-    imageSrc: "",
-    id: "fake",
-    vendor: {
-      name: "Cherry",
-      logoSrc: <CherryLogo />,
-    },
-    color: "#02990c",
-  },
+
   {
     name: "Black - PBT keycaps",
     includesNumpad: false,

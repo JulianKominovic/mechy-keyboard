@@ -14,6 +14,7 @@ import useLocalStorage from "use-local-storage";
 import { error, trace } from "tauri-plugin-log-api";
 import Separator from "./components/separator";
 import { useEffect, useState } from "react";
+import VolumeSlider from "./components/volume-slider";
 
 function cn(...classNames: any[]) {
   return classNames.filter((e) => e).join(" ");
@@ -127,7 +128,7 @@ function App() {
       >
         <aside
           className={cn(
-            "flex flex-col h-full pt-12 pl-4 pr-2 w-full transition-opacity duration-200"
+            "flex flex-col relative select-none h-full pt-12 pl-4 pr-2 w-full overflow-y-auto transition-opacity duration-200"
             // {
             //   "opacity-0": !sidebarOpen,
             //   "opacity-100": sidebarOpen,
@@ -167,17 +168,16 @@ function App() {
               );
             })}
           </div>
-          <footer className="flex flex-shrink-0 gap-2"></footer>
+          <footer className="flex flex-shrink-0 gap-2 "></footer>
         </aside>
 
         <main className="relative w-full h-full px-2 py-2 overflow-x-hidden overflow-y-visible">
-          <img
-            className="absolute -right-32 -top-28 drop-shadow-[5px_6px_4px_rgb(88,51,35)] shadow-primary-950"
-            src={LogoImage}
-            alt=""
-          />
-
-          <div className="h-full px-8 py-8 pt-12 overflow-x-hidden overflow-y-auto rounded-lg shadow-lg bg-neutral-100 bg-gradient-to-tl from-[#d9ac92] to-[#dfb398]">
+          <div className="relative h-full px-8 py-8 pt-12 overflow-x-hidden overflow-y-auto rounded-lg shadow-lg bg-neutral-100 bg-gradient-to-tl from-[#d9ac92] to-[#dfb398]">
+            <img
+              className="absolute -right-32 -top-28 drop-shadow-[5px_6px_4px_rgb(88,51,35)] shadow-primary-950 select-none"
+              src={LogoImage}
+              alt=""
+            />
             <header className="cursor-default select-none">
               <a
                 target="_blank"
@@ -195,14 +195,18 @@ function App() {
                 mechanical keyboard.
               </p>
             </header>
+            <Separator className="my-8 after:bg-primary-900/20 after:h-[2px]"></Separator>
+            <footer className="relative z-10 mt-10">
+              <VolumeSlider />
+            </footer>
           </div>
-          <footer></footer>
         </main>
       </div>
       <Toaster
         toastOptions={{
           className:
             "bg-primary-900 text-primary-100 [&__*.sonner-loading-bar]:bg-primary-100",
+
           descriptionClassName: "text-primary-300",
         }}
       />

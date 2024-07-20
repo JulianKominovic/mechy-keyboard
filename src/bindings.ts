@@ -14,4 +14,8 @@ export function chooseSoundpack(soundpackId: string, soundpackFolder: string) {
     return invoke()<null>("choose_soundpack", { soundpackId,soundpackFolder })
 }
 
+export function setVolumeLevel(volume: number) {
+    return invoke()<null>("set_volume_level", { volume })
+}
+
 

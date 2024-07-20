@@ -40,6 +40,18 @@ static KEYS_PRESSED: Lazy<std::sync::Mutex<Vec<Key>>> =
 
 #[specta::specta]
 #[tauri::command]
+async fn set_volume_level(volume: f32) -> Result<(), String> {
+    if volume < 0.0 || volume > 1.0 {
+        return Err("For good sake of your ears volume must be between 0.0 and 1.0. If you see this, probably a bug happened.".to_string());
+    }
+    trace!("Setting volume to: {}", volume);
+    let mut soundpack_lock = SOUNDPACK.lock().await;
+    soundpack_lock.set_volume(volume);
+    Ok(())
+}
+
+#[specta::specta]
+#[tauri::command]
 async fn choose_soundpack(soundpack_id: String, soundpack_folder: String) -> Result<(), String> {
     trace!(
         "Choosing soundpack: {} with folder located in: {}",
@@ -72,7 +84,11 @@ async fn choose_soundpack(soundpack_id: String, soundpack_folder: String) -> Res
 }
 fn main() {
     #[cfg(debug_assertions)]
-    ts::export(collect_types![choose_soundpack], "../src/bindings.ts").unwrap();
+    ts::export(
+        collect_types![choose_soundpack, set_volume_level],
+        "../src/bindings.ts",
+    )
+    .unwrap();
 
     /*
         Here we listen for key events and play sounds accordingly.
@@ -129,7 +145,7 @@ fn main() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![choose_soundpack])
+        .invoke_handler(tauri::generate_handler![choose_soundpack, set_volume_level])
         .plugin(plugins::mac_os::traffic_lights::init())
         .plugin(
             tauri_plugin_log::Builder::default()
