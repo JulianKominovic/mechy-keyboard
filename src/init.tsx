@@ -11,7 +11,18 @@ import { platform } from "@tauri-apps/api/os";
 import { info, warn } from "tauri-plugin-log-api";
 import { getSoundpacksInstalled } from "./integration/soundpacks";
 import { version, homepage, repository } from "../package.json";
+import { GithubLogo, TwitterLogo } from "@phosphor-icons/react";
 
+export const SOCIAL = [
+  {
+    icon: <GithubLogo weight="fill" size={18} />,
+    url: "https://github.com/JulianKominovic/mechy-keyboard",
+  },
+  {
+    icon: <TwitterLogo weight="fill" size={18} />,
+    url: "https://twitter.com/juliankominovic",
+  },
+];
 export const MUTE_SHORTCUT = "CommandOrControl+Shift+M";
 export const VOLUME_UP_SHORTCUT = "CommandOrControl+Shift+ArrowUp";
 export const VOLUME_DOWN_SHORTCUT = "CommandOrControl+Shift+ArrowDown";

@@ -23,8 +23,7 @@
       "shell": {
         "all": false,
         "execute": false,
-        "open": true,
-        "scope": [],
+        "open": "^((https?://)|(file://)).+$",
         "sidecar": false
       },
       "window": {

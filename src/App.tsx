@@ -1,20 +1,27 @@
 import { Toaster, toast } from "sonner";
 import { StarFour } from "@phosphor-icons/react";
 import {
+  APP_CACHE_DIR,
+  APP_CONFIG_DIR,
+  APP_LOG_DIR,
   DEFAULT_SOUNDPACK,
   GITHUB_REPO,
   KEYBOARD_MODELS,
   LOCAL_STORAGE_SOUNDPACK_KEY,
+  SOCIAL,
+  SOUNDPACKS_DIR,
   SOUNDPACKS_INSTALLED,
   VERSION,
 } from "./init";
 import { changeSoundpack } from "./integration/soundpacks";
 import LogoImage from "./assets/logo-transparent.png";
+import FaviconImage from "./assets/128x128.png";
 import useLocalStorage from "use-local-storage";
 import { error, trace } from "tauri-plugin-log-api";
 import Separator from "./components/separator";
 import { useEffect, useState } from "react";
 import VolumeSlider from "./components/volume-slider";
+import { open } from "@tauri-apps/api/shell";
 
 function cn(...classNames: any[]) {
   return classNames.filter((e) => e).join(" ");
@@ -126,7 +133,7 @@ function App() {
       >
         <aside
           className={cn(
-            "flex flex-col relative select-none h-full pt-12 pl-4 pr-2 w-full overflow-y-auto transition-opacity duration-200"
+            "flex flex-col relative select-none h-full pt-12 pl-4 pr-2 w-full overflow-y-auto transition-opacity duration-200 pb-4"
             // {
             //   "opacity-0": !sidebarOpen,
             //   "opacity-100": sidebarOpen,
@@ -168,7 +175,91 @@ function App() {
               );
             })}
           </div>
-          <footer className="flex flex-shrink-0 gap-2 "></footer>
+          <Separator className="mt-4 mb-2">Info</Separator>
+          <footer className="text-xs text-neutral-500">
+            <ul className="flex flex-col gap-1 mb-4">
+              <li>
+                <b>Version</b>:{" "}
+                <a
+                  href={GITHUB_REPO + "/releases/tag/" + VERSION}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline cursor-pointer underline-offset-2"
+                >
+                  {VERSION}
+                </a>
+              </li>
+              <li className="flex overflow-x-hidden">
+                <b className="flex-shrink-0">App log folder</b>:{" "}
+                <button
+                  title={APP_LOG_DIR}
+                  onClick={() => {
+                    open("file://" + APP_LOG_DIR);
+                  }}
+                  className="w-full underline truncate cursor-pointer text-ellipsis underline-offset-2"
+                >
+                  {APP_LOG_DIR}
+                </button>
+              </li>
+              <li className="flex overflow-x-hidden">
+                <b className="flex-shrink-0">App config folder</b>:{" "}
+                <button
+                  title={APP_CONFIG_DIR}
+                  onClick={() => {
+                    open("file://" + APP_CONFIG_DIR);
+                  }}
+                  className="w-full underline truncate cursor-pointer text-ellipsis underline-offset-2"
+                >
+                  {APP_CONFIG_DIR}
+                </button>
+              </li>
+              <li className="flex overflow-x-hidden">
+                <b className="flex-shrink-0">App cache folder</b>:{" "}
+                <button
+                  title={APP_CACHE_DIR}
+                  onClick={() => {
+                    open("file://" + APP_CACHE_DIR);
+                  }}
+                  className="w-full underline truncate cursor-pointer text-ellipsis underline-offset-2"
+                >
+                  {APP_CACHE_DIR}
+                </button>
+              </li>
+              <li className="flex overflow-x-hidden">
+                <b className="flex-shrink-0">Soundpacks folders</b>:{" "}
+                <button
+                  title={SOUNDPACKS_DIR}
+                  onClick={() => {
+                    open("file://" + SOUNDPACKS_DIR);
+                  }}
+                  className="w-full underline truncate cursor-pointer text-ellipsis underline-offset-2"
+                >
+                  {SOUNDPACKS_DIR}
+                </button>
+              </li>
+            </ul>
+            Created by{" "}
+            <a
+              href="https://twitter.com/juliankominovic"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline cursor-pointer underline-offset-2"
+            >
+              @Julian Kominvovic
+            </a>{" "}
+            <div className="flex">
+              {SOCIAL.map((social) => (
+                <a
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-8 h-8 gap-2 text-xs text-left truncate rounded-lg text-black/60 hover:bg-black/10 text-ellipsis"
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
+          </footer>
         </aside>
 
         <main className="relative w-full h-full px-2 py-2 overflow-x-hidden overflow-y-visible">

@@ -10,7 +10,7 @@
   *,
   *::after,
   *::before {
-    @apply cursor-auto select-none focus:outline-primary-700 focus:outline focus:outline-2 focus:outline-offset-2;
+    @apply cursor-default select-none focus:outline-primary-700 focus:outline focus:outline-2 focus:outline-offset-2;
   }
   [data-sonner-toaster="true"] *::after,
   [data-sonner-toaster="true"] *::before {
