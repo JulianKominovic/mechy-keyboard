@@ -174,7 +174,7 @@ const VolumeSlider = () => {
       <div className="flex items-center gap-2 mt-2">
         <button
           onClick={toggleMute}
-          className="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
+          className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
         >
           {value === 0 ? (
             <SpeakerX
