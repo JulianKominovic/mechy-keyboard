@@ -1,8 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-use keypress::key_code::code_from_key;
 use log::{error, trace};
 use once_cell::sync::Lazy;
+#[cfg(target_os = "macos")]
 use plugins::mac_os::traffic_lights::setup_traffic_light_positioner;
 use rdev::{listen, EventType, Key};
 use std::sync::Arc;

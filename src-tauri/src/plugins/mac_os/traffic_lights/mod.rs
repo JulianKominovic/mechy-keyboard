@@ -7,11 +7,14 @@
 ///
 ///
 ///
+///
+#[cfg(target_os = "macos")]
 use objc::{msg_send, sel, sel_impl};
+#[cfg(target_os = "macos")]
 use rand::{distributions::Alphanumeric, Rng};
 use tauri::{
     plugin::{Builder, TauriPlugin},
-    Manager, Runtime, Window,
+    Runtime, Window,
 }; // 0.8
 
 const WINDOW_CONTROL_PAD_X: f64 = 15.0;
