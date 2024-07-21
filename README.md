@@ -11,6 +11,22 @@ sudo apt install libfuse2
 
 ```
 
+2. Download the latest release from the [releases page](https://github.com/JulianKominovic/mechy-keyboard/releases/tag/v1.0.0)
+3. Download .AppImage file
+4. Make the file executable
+
+```bash
+# Replace the file name with the one you downloaded
+chmod +x mechy-keyboard-1.0.0-amd64.AppImage
+```
+
+5. Run the file with sudo
+
+```bash
+# Replace the file name with the one you downloaded
+./mechy-keyboard-1.0.0-amd64.AppImage
+```
+
 ## Features
 
 ### ⚡️ Fast & lightweight
