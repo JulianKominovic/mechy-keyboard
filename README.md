@@ -2,7 +2,16 @@
 
 ## Installation
 
-### Ubuntu 24.04
+### MacOS
+
+1. Download the latest release from the [releases page](https://github.com/JulianKominovic/mechy-keyboard/releases/latest)
+2. Download the .app file
+3. Move the file to the Applications folder
+4. Open the app
+
+### Ubuntu 24.04 (only on X11)
+
+> The app is not compatible with Wayland. If you are using Wayland, you need to switch to X11. You can do it by logging out and selecting X11 in the login screen. (google it, it's easy)
 
 1. Install prerequisites
 
@@ -11,7 +20,7 @@ sudo apt install libfuse2
 
 ```
 
-2. Download the latest release from the [releases page](https://github.com/JulianKominovic/mechy-keyboard/releases/tag/v1.0.0)
+2. Download the latest release from the [releases page](https://github.com/JulianKominovic/mechy-keyboard/releases/latest)
 3. Download .AppImage file
 4. Make the file executable
 
