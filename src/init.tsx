@@ -35,21 +35,15 @@ export const APP_CACHE_DIR = await appCacheDir();
 export const APP_CONFIG_DIR = await appConfigDir();
 export const APP_LOG_DIR = await appLogDir();
 export const SOUNDPACKS_DIR = await join(APP_CACHE_DIR, "soundpacks");
-await createDir(APP_CACHE_DIR).catch(() => warn("Failed to create cache dir"));
-await createDir(APP_CONFIG_DIR).catch(() =>
+await createDir(APP_CACHE_DIR, { recursive: true }).catch(() =>
+  warn("Failed to create cache dir")
+);
+await createDir(APP_CONFIG_DIR, { recursive: true }).catch(() =>
   warn("Failed to create config dir")
 );
-await createDir(SOUNDPACKS_DIR).catch((err) =>
+await createDir(SOUNDPACKS_DIR, { recursive: true }).catch((err) =>
   warn("Failed to create soundpacks dir " + err)
 );
-export const DEFAULT_SOUNDPACK: string | undefined = await readDir(
-  SOUNDPACKS_DIR
-)
-  .then((files) => files[0]?.name)
-  .catch(() => {
-    warn("Failed to read soundpacks dir");
-    return "";
-  });
 export const SOUNDPACKS_INSTALLED = await getSoundpacksInstalled();
 export const LOCAL_STORAGE_SOUNDPACK_KEY = "selected-soundpack";
 export const LOCAL_STORAGE_VOLUME_KEY = "volume";
@@ -58,7 +52,6 @@ info(`App cache dir: ${APP_CACHE_DIR}`);
 info(`App config dir: ${APP_CONFIG_DIR}`);
 info(`App log dir: ${APP_LOG_DIR}`);
 info(`Soundpacks dir: ${SOUNDPACKS_DIR}`);
-info(`Default soundpack: ${DEFAULT_SOUNDPACK}`);
 
 type KeyboardModel = {
   name: string;

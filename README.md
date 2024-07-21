@@ -1,5 +1,16 @@
 ![github og image (1)](https://github.com/user-attachments/assets/7f74037c-a5cb-4624-bf3d-e26a5ebe018e)
 
+## Installation
+
+### Ubuntu 24.04
+
+1. Install prerequisites
+
+```bash
+sudo apt install libfuse2
+
+```
+
 ## Features
 
 ### ⚡️ Fast & lightweight

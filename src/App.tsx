@@ -64,10 +64,9 @@ function App() {
   const [installedSoundpacksIds, setInstalledSoundpacksIds] = useState(
     new Set(SOUNDPACKS_INSTALLED)
   );
-  const [selectedSoundpackId, setSelectedSoundpackId] = useLocalStorage(
-    LOCAL_STORAGE_SOUNDPACK_KEY,
-    DEFAULT_SOUNDPACK
-  );
+  const [selectedSoundpackId, setSelectedSoundpackId] = useLocalStorage<
+    string | undefined
+  >(LOCAL_STORAGE_SOUNDPACK_KEY, undefined);
 
   const currentSoundpack = KEYBOARD_MODELS.find(
     (keyboard) => keyboard.id === selectedSoundpackId
