@@ -1,5 +1,5 @@
 import { appCacheDir, appConfigDir, appLogDir } from "@tauri-apps/api/path";
-import { createDir, readDir } from "@tauri-apps/api/fs";
+import { createDir } from "@tauri-apps/api/fs";
 import CherryLogo from "./assets/CherryLogo";
 import EverglideLogo from "./assets/EverglideLogo";
 import GloriousLogo from "./assets/GloriousLogo";
