@@ -195,3 +195,18 @@ You can check the main.rs file [here](https://github.com/JulianKominovic/mechy-k
 
 3. To keep things responsive we avoid doing heavy operations in the previous thread so we don't block it. Sound were already prepared in the `choose_soundpack` tauri command which is called by the frontend when the app starts **(I'm 99% sure this will change in the future)**.
 4. So when a key is pressed, we just play the sound. We don't load the sound, we just play it. This is why the app is so fast and responsive.
+
+## Development
+
+Tauri development requisites: https://tauri.app/v1/guides/getting-started/prerequisites/
+
+### Linux
+
+#### Ubuntu 24.04
+
+1. Install prerequisites
+
+```bash
+sudo apt-get update
+sudo apt-get install build-essential pkg-config libglib2.0-dev libpango1.0-dev libgdk-pixbuf2.0-dev libatk-bridge2.0 libsoup2.4-dev libgtk-3-dev curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev javascriptcoregtk-4.1 libsoup-3.0 webkit2gtk-4.1 libwebkit2gtk-4.0-dev
+```
