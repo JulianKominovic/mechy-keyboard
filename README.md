@@ -102,7 +102,7 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 - [Kira Rust backend agnostic library](https://docs.rs/kira/latest/kira/index.html) for the audio server manager
 - [Mechvibes](https://github.com/hainguyents13/mechvibes/) for the soundpacks and the inspiration. Check their [website](https://mechvibes.com/).
 - Check [Rusty vibes](https://github.com/KunalBagaria/rustyvibes). I took some inspiration from it and source code also 😜.
-- [Fufesou rdev fork](https://github.com/fufesou/rdev) that fixes a macOS crash bug
+- [Rustdesk rdev fork](https://github.com/rustdesk-org/rdev) that fixes a macOS crash bug and some other bugs.
 - [Fooocus](https://github.com/lllyasviel/Fooocus) for AI logo generation
 - [IOPaint](https://github.com/Sanster/IOPaint) an open source AI objects remover to fix some artifacts in the generated logos
 - [Upscayl](https://upscayl.org/) to scale the generated logos up to 4k
