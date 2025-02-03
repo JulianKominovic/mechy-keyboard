@@ -5,12 +5,12 @@ use kira::{
     StartTime, Volume,
 };
 use log::{error, trace};
-use rdev::Key;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, fs, io::Cursor, path::PathBuf, time::Duration};
 
 use crate::{
     constants::REMOTE_SOUNDPACK_DIRECTORY,
+    keyboard_listener,
     keypress::key_code::{code_from_key, get_panning_from_key_location},
     utils,
 };
@@ -54,7 +54,7 @@ impl Soundpack {
         self.id = id;
     }
 
-    pub fn play_sound(&self, key: Key, reversed: bool) {
+    pub fn play_sound(&self, key: keyboard_listener::Key, reversed: bool) {
         let key_code = code_from_key(key).unwrap_or_else(|| 1);
         let panning_from_key = get_panning_from_key_location(key);
         if let Some(ranges) = self.sound_slices.get(&key_code) {

@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "Mechy Keyboard",
-    "version": "1.0.3"
+    "version": "1.0.4"
   },
   "tauri": {
     "allowlist": {
@@ -102,11 +102,13 @@
         "exceptionDomain": "",
         "frameworks": [],
         "providerShortName": null,
-        "signingIdentity": null
+        "signingIdentity": "-",
+        "license": "MIT",
+        "minimumSystemVersion": "10.13"
       },
       "resources": [],
       "shortDescription": "Give your keyboard a voice.",
-      "targets": "all",
+      "targets": ["deb", "dmg", "app"],
 
       "publisher": "Julian Kominovic",
       "windows": {
@@ -116,10 +118,15 @@
       }
     },
     "security": {
-      "csp": "default-src 'self'; media-src 'self' asset: https://asset.localhost;"
+      "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: asset: 'unsafe-eval' 'unsafe-inline' 'self';"
     },
     "updater": {
-      "active": false
+      "active": true,
+      "endpoints": [
+        "https://github.com/JulianKominovic/mechy-keyboard/releases/download/updater/update.json"
+      ],
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEMzMkMxNkIzMTBCOUQ2MkMKUldRczFya1FzeFlzdzlZb1F2MStJSittVUxBVDF1SjBVamJ6SmlWU3ZwdXpsN1VOMDFHUVhSTTMK"
     },
     "macOSPrivateApi": true,
     "windows": [

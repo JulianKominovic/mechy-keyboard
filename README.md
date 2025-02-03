@@ -100,6 +100,7 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 ## Thanks to
 
 - [Kira Rust backend agnostic library](https://docs.rs/kira/latest/kira/index.html) for the audio server manager
+- [ZacharyL2](https://github.com/ZacharyL2) for [key listening code](https://github.com/ZacharyL2/KeyEcho/blob/master/src-tauri/src/keyecho/listen_key)
 - [Mechvibes](https://github.com/hainguyents13/mechvibes/) for the soundpacks and the inspiration. Check their [website](https://mechvibes.com/).
 - Check [Rusty vibes](https://github.com/KunalBagaria/rustyvibes). I took some inspiration from it and source code also 😜.
 - [Rustdesk rdev fork](https://github.com/rustdesk-org/rdev) that fixes a macOS crash bug and some other bugs.

@@ -1,10 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use keyboard_listener::KeyEvent;
 use log::{error, trace};
 use once_cell::sync::Lazy;
 #[cfg(target_os = "macos")]
 use plugins::mac_os::traffic_lights::setup_traffic_light_positioner;
-use rdev::{listen, EventType, Key};
 use std::sync::Arc;
 use std::thread;
 use std::{env, path::PathBuf};
@@ -15,6 +15,7 @@ use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
 
 pub mod constants;
 pub mod events;
+pub mod keyboard_listener;
 pub mod keypress;
 pub mod plugins;
 pub mod soundpacks;
@@ -35,7 +36,7 @@ extern crate objc;
 static SOUNDPACK: Lazy<Arc<Mutex<Soundpack>>> =
     Lazy::new(|| Arc::new(Mutex::new(Soundpack::new())));
 
-static KEYS_PRESSED: Lazy<std::sync::Mutex<Vec<Key>>> =
+static KEYS_PRESSED: Lazy<std::sync::Mutex<Vec<keyboard_listener::Key>>> =
     Lazy::new(|| std::sync::Mutex::new(Vec::new()));
 
 #[specta::specta]
@@ -90,42 +91,11 @@ fn main() {
     )
     .unwrap();
 
-    /*
-        Here we listen for key events and play sounds accordingly.
-
-        We also keep track of keys that are currently pressed to avoid playing the same sound multiple times when a key is held down.
-
-    */
-    thread::spawn(|| {
-        if let Err(error) = listen(move |event| match event.event_type {
-            EventType::KeyPress(key) => {
-                let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
-                if keys_pressed_lock.contains(&key) {
-                    drop(keys_pressed_lock);
-                    return;
-                } else {
-                    keys_pressed_lock.push(key);
-                    drop(keys_pressed_lock);
-                }
-
-                tauri::async_runtime::block_on(async {
-                    SOUNDPACK.lock().await.play_sound(key, false);
-                });
-            }
-            EventType::KeyRelease(key) => {
-                let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
-                keys_pressed_lock.retain(|&x| x != key);
-                tauri::async_runtime::block_on(async {
-                    SOUNDPACK.lock().await.play_sound(key, true);
-                });
-            }
-            _ => {}
-        }) {
-            error!("Error: {:?}", error)
-        }
-    });
     tauri::Builder::default()
         .setup(move |app| {
+            #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
             let window = app.get_window("main").unwrap();
             let window_clone = window.clone();
             #[cfg(target_os = "macos")]
@@ -142,7 +112,41 @@ fn main() {
                     setup_traffic_light_positioner(window_clone.clone())
                 }
             });
+            /*
+                Here we listen for key events and play sounds accordingly.
 
+                We also keep track of keys that are currently pressed to avoid playing the same sound multiple times when a key is held down.
+
+            */
+            thread::spawn(move || {
+                if let Err(error) =
+                    keyboard_listener::listen(|event: keyboard_listener::KeyEvent| match event {
+                        KeyEvent::KeyPress(key) => {
+                            let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
+                            if keys_pressed_lock.contains(&key) {
+                                drop(keys_pressed_lock);
+                                return;
+                            } else {
+                                keys_pressed_lock.push(key);
+                                drop(keys_pressed_lock);
+                            }
+
+                            tauri::async_runtime::block_on(async {
+                                SOUNDPACK.lock().await.play_sound(key, false);
+                            });
+                        }
+                        KeyEvent::KeyRelease(key) => {
+                            let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
+                            keys_pressed_lock.retain(|&x| x != key);
+                            tauri::async_runtime::block_on(async {
+                                SOUNDPACK.lock().await.play_sound(key, true);
+                            });
+                        }
+                    })
+                {
+                    error!("Error: {:?}", error)
+                }
+            });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![choose_soundpack, set_volume_level])
