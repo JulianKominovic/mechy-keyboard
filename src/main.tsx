@@ -13,6 +13,7 @@ if (PLATFORM !== "darwin") {
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <App />
 );
+
 window.addEventListener("error", (event) => {
   error(event.error);
   console.log(event);

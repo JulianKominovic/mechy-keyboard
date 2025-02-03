@@ -15,12 +15,12 @@ use rand::{distributions::Alphanumeric, Rng};
 use tauri::{
     plugin::{Builder, TauriPlugin},
     Runtime, Window,
-}; // 0.8
+};
 
 const WINDOW_CONTROL_PAD_X: f64 = 15.0;
 const WINDOW_CONTROL_PAD_Y: f64 = 23.0;
 
-struct UnsafeWindowHandle(*mut std::ffi::c_void);
+pub struct UnsafeWindowHandle(*mut std::ffi::c_void);
 unsafe impl Send for UnsafeWindowHandle {}
 unsafe impl Sync for UnsafeWindowHandle {}
 

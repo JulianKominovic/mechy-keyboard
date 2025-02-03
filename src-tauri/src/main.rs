@@ -1,17 +1,19 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use keyboard_listener::KeyEvent;
-use log::{error, trace};
+use log::error;
 use once_cell::sync::Lazy;
 #[cfg(target_os = "macos")]
 use plugins::mac_os::traffic_lights::setup_traffic_light_positioner;
+use soundpacks::Soundpack;
 use std::sync::Arc;
 use std::thread;
-use std::{env, path::PathBuf};
+use system_tray::{build_system_tray, build_system_tray_events};
 use tauri::async_runtime::Mutex;
 use tauri::Manager;
 use tauri_plugin_log::LogTarget;
-use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
+use window_vibrancy::apply_vibrancy;
+use window_vibrancy::NSVisualEffectMaterial;
 
 pub mod constants;
 pub mod events;
@@ -19,11 +21,8 @@ pub mod keyboard_listener;
 pub mod keypress;
 pub mod plugins;
 pub mod soundpacks;
+pub mod system_tray;
 pub mod utils;
-
-use soundpacks::{download_soundpack_if_necessary, Soundpack};
-use specta::collect_types;
-use tauri_specta::ts;
 
 #[cfg(target_os = "macos")]
 #[macro_use]
@@ -33,64 +32,13 @@ extern crate cocoa;
 #[macro_use]
 extern crate objc;
 
-static SOUNDPACK: Lazy<Arc<Mutex<Soundpack>>> =
+pub static SOUNDPACK: Lazy<Arc<Mutex<Soundpack>>> =
     Lazy::new(|| Arc::new(Mutex::new(Soundpack::new())));
 
-static KEYS_PRESSED: Lazy<std::sync::Mutex<Vec<keyboard_listener::Key>>> =
+pub static KEYS_PRESSED: Lazy<std::sync::Mutex<Vec<keyboard_listener::Key>>> =
     Lazy::new(|| std::sync::Mutex::new(Vec::new()));
 
-#[specta::specta]
-#[tauri::command]
-async fn set_volume_level(volume: f32) -> Result<(), String> {
-    if volume < 0.0 || volume > 1.0 {
-        return Err("For good sake of your ears volume must be between 0.0 and 1.0. If you see this, probably a bug happened.".to_string());
-    }
-    trace!("Setting volume to: {}", volume);
-    let mut soundpack_lock = SOUNDPACK.lock().await;
-    soundpack_lock.set_volume(volume);
-    Ok(())
-}
-
-#[specta::specta]
-#[tauri::command]
-async fn choose_soundpack(soundpack_id: String, soundpack_folder: String) -> Result<(), String> {
-    trace!(
-        "Choosing soundpack: {} with folder located in: {}",
-        soundpack_id,
-        soundpack_folder
-    );
-    let new_soundpack_folder = PathBuf::from(soundpack_folder).join(&soundpack_id);
-    trace!("New soundpack folder will be: {:?}", new_soundpack_folder);
-    let download_result =
-        download_soundpack_if_necessary(soundpack_id, &new_soundpack_folder).await;
-    if download_result.is_err() {
-        return Err(download_result.unwrap_err());
-    }
-    let new_soundpack_sound_data = soundpacks::prepare_sound_data(&new_soundpack_folder);
-    let new_soundpack_slices = soundpacks::prepare_sound_slices(&new_soundpack_folder);
-    trace!("New soundpack slices: {:?}", new_soundpack_slices);
-    trace!("New soundpack sound data: {:?}", new_soundpack_sound_data);
-    let mut soundpack_lock = SOUNDPACK.lock().await;
-
-    if new_soundpack_sound_data.is_err() {
-        return Err("Error preparing sounds".to_string());
-    }
-    if new_soundpack_slices.is_empty() {
-        return Err("Error preparing sound slices".to_string());
-    }
-    soundpack_lock.set_sound_data(Some(new_soundpack_sound_data.unwrap()));
-    soundpack_lock.set_sound_slices(new_soundpack_slices);
-
-    Ok(())
-}
 fn main() {
-    #[cfg(debug_assertions)]
-    ts::export(
-        collect_types![choose_soundpack, set_volume_level],
-        "../src/bindings.ts",
-    )
-    .unwrap();
-
     tauri::Builder::default()
         .setup(move |app| {
             #[cfg(target_os = "macos")]
@@ -120,7 +68,8 @@ fn main() {
             */
             thread::spawn(move || {
                 if let Err(error) =
-                    keyboard_listener::listen(|event: keyboard_listener::KeyEvent| match event {
+                    keyboard_listener::listen(move |event: keyboard_listener::KeyEvent| match event
+                    {
                         KeyEvent::KeyPress(key) => {
                             let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
                             if keys_pressed_lock.contains(&key) {
@@ -147,15 +96,34 @@ fn main() {
                     error!("Error: {:?}", error)
                 }
             });
+
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![choose_soundpack, set_volume_level])
+        .invoke_handler(tauri::generate_handler![
+            events::choose_soundpack,
+            events::set_volume_level
+        ])
         .plugin(plugins::mac_os::traffic_lights::init())
         .plugin(
             tauri_plugin_log::Builder::default()
                 .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
                 .build(),
         )
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .system_tray(build_system_tray())
+        .on_system_tray_event(build_system_tray_events)
+        .on_window_event(|event| match event.event() {
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                event.window().hide().unwrap();
+                api.prevent_close();
+            }
+            _ => {}
+        })
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(|_app_handle, event| match event {
+            tauri::RunEvent::ExitRequested { api, .. } => {
+                api.prevent_exit();
+            }
+            _ => {}
+        });
 }

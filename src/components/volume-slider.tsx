@@ -1,4 +1,10 @@
-import { useCallback, useDeferredValue, useEffect, useRef } from "react";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 import useLocalStorage from "use-local-storage";
 import {
   LOCAL_STORAGE_VOLUME_KEY,
@@ -15,12 +21,54 @@ import {
   Minus,
 } from "@phosphor-icons/react";
 import { useDebounceFunction } from "../utils/debounce-fn";
-import { setVolumeLevel } from "../bindings";
 import { toast } from "sonner";
 import { register, unregister } from "@tauri-apps/api/globalShortcut";
 import { error } from "tauri-plugin-log-api";
 import { Keys } from "../utils/keymaps";
 import Shortcut from "./shortcut";
+import { setVolumeLevel } from "../integration/soundpacks";
+
+// Using sync external storage
+const localStorageVolume = localStorage.getItem("volume") || "50";
+let volume = localStorageVolume ? parseInt(localStorageVolume) : 50;
+let previousVolumeBeforeMute = volume;
+let listeners: Function[] = [];
+
+export const volumeStore = {
+  setVolume(value: number) {
+    value = Math.min(100, Math.max(0, value));
+    previousVolumeBeforeMute = volume;
+    volume = value;
+    localStorage.setItem("volume", value.toString());
+    emitChange();
+  },
+  subscribe(listener: Function) {
+    listeners = [...listeners, listener];
+    return () => {
+      listeners = listeners.filter((l) => l !== listener);
+    };
+  },
+  getSnapshot() {
+    return +volume;
+  },
+  toggleMute() {
+    if (volume === 0) {
+      volume = previousVolumeBeforeMute;
+    } else {
+      previousVolumeBeforeMute = volume;
+      volume = 0;
+    }
+    localStorage.setItem("volume", volume.toString());
+    sendVolumeLevel();
+    emitChange();
+  },
+};
+
+function emitChange() {
+  for (let listener of listeners) {
+    listener();
+  }
+}
 
 async function registerKeyboardShortcut(
   shortcut: string,
@@ -53,21 +101,45 @@ async function registerKeyboardShortcut(
     });
 }
 
+const unregisterMuteShortcut = registerKeyboardShortcut(
+  MUTE_SHORTCUT,
+  volumeStore.toggleMute
+);
+const unregisterVolumeUpShortcut = registerKeyboardShortcut(
+  VOLUME_UP_SHORTCUT,
+  () => {
+    volumeStore.setVolume(volume + 5);
+    sendVolumeLevel();
+  }
+);
+const unregisterVolumeDownShortcut = registerKeyboardShortcut(
+  VOLUME_DOWN_SHORTCUT,
+  () => {
+    volumeStore.setVolume(volume - 5);
+    sendVolumeLevel();
+  }
+);
+
+function sendVolumeLevel() {
+  setVolumeLevel(volume / 100).catch((err) => {
+    error("Failed to set volume level" + err);
+    toast.error("Failed to set volume level", {
+      duration: 5000,
+      description: err,
+    });
+  });
+}
+
 const VolumeSlider = () => {
   const { debounce } = useDebounceFunction(50);
-  const [value, setValue] = useLocalStorage<number>(
-    LOCAL_STORAGE_VOLUME_KEY,
-    50,
-    {
-      serializer: (val) => val?.toString() || "50",
-      parser: (val) => parseInt(val),
-    }
+  const value = useSyncExternalStore(
+    volumeStore.subscribe,
+    volumeStore.getSnapshot
   );
-  const previousValueBeforeMute = useRef(value);
 
   function setVolume(value: number) {
     value = Math.min(100, Math.max(0, value));
-    setValue(value);
+    volumeStore.setVolume(value);
     debounce(() => {
       setVolumeLevel(value / 100).catch((err) => {
         error("Failed to set volume level" + err);
@@ -79,41 +151,12 @@ const VolumeSlider = () => {
     });
   }
 
-  const toggleMute = useCallback(
-    function toggleMute() {
-      setVolume(value === 0 ? previousValueBeforeMute.current : 0);
-      previousValueBeforeMute.current = value;
-    },
-    [value, previousValueBeforeMute]
-  );
-  const deferredValue = useDeferredValue(value);
   useEffect(() => {
-    let unregisterMuteShortcut = registerKeyboardShortcut(
-      MUTE_SHORTCUT,
-      toggleMute
-    );
-    let unregisterVolumeUpShortcut = registerKeyboardShortcut(
-      VOLUME_UP_SHORTCUT,
-      () => {
-        setVolume(value + 5);
-      }
-    );
-    let unregisterVolumeDownShortcut = registerKeyboardShortcut(
-      VOLUME_DOWN_SHORTCUT,
-      () => {
-        setVolume(value - 5);
-      }
-    );
-
     return () => {
       unregisterMuteShortcut.then((fn) => fn());
       unregisterVolumeUpShortcut.then((fn) => fn());
       unregisterVolumeDownShortcut.then((fn) => fn());
     };
-  }, [deferredValue]);
-
-  useEffect(() => {
-    setVolume(value);
   }, []);
 
   return (
@@ -173,7 +216,7 @@ const VolumeSlider = () => {
       </div>
       <div className="flex items-center gap-2 mt-2">
         <button
-          onClick={toggleMute}
+          onClick={volumeStore.toggleMute}
           className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
         >
           {value === 0 ? (

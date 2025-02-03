@@ -1,57 +1,76 @@
 [package]
 name = "mechy-keyboard"
-version = "1.0.3"
+version = "1.0.0"
 description = "Give your keyboard a voice. Simulate the sounds of typing on a mechanical keyboard."
-authors = ["Julian Kominovic <juliankominovic@gmail.com>"]
+authors = [ "Julian Kominovic <juliankominovic@gmail.com>" ]
 license = ""
 repository = "https://github.com/JulianKominovic/mechy-keyboard"
 default-run = "mechy-keyboard"
 edition = "2021"
 rust-version = "1.60"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [build-dependencies]
-tauri-build = { version = "1.5.0", features = [] }
+[build-dependencies.tauri-build]
+version = "1.5.0"
+features = []
 
 [dependencies]
 serde_json = "1.0"
-serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.5.2", features = [ "updater", "os-all", "global-shortcut-all", "shell-open", "fs-create-dir", "fs-exists", "fs-write-file", "window-start-dragging", "macos-private-api", "fs-read-dir", "path-all"] }
-specta = "1.0.5"
-tauri-specta = { version = "1.0.2", features = ["typescript"] }
 strum = "0.25.0"
-# rdev = { git = "https://github.com/rustdesk-org/rdev" }
 once_cell = "1.19.0"
 kira = "0.9.3"
 rand = "0.8.5"
 window-vibrancy = "0.4.3"
 reqwest = "0.12.5"
 zip-extract = "0.1.3"
-tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 log = "0.4.22"
 
+[dependencies.serde]
+version = "1.0"
+features = [ "derive" ]
 
-[target.'cfg(target_os = "windows")'.dependencies]
-winapi = { version = "0", features = [
-  "winuser",
-  "errhandlingapi",
-  "processthreadsapi",
-] }
+[dependencies.tauri]
+version = "1.5.2"
+features = [ "fs-remove-dir", "shell-execute", "system-tray", "updater", "os-all", "global-shortcut-all", "shell-open", "fs-create-dir", "fs-exists", "fs-write-file", "window-start-dragging", "macos-private-api", "fs-read-dir", "path-all" ]
 
-[target.'cfg(target_os = "macos")'.dependencies]
+[dependencies.tauri-plugin-log]
+git = "https://github.com/tauri-apps/plugins-workspace"
+branch = "v1"
+
+[target]
+[target."cfg(target_os = \"windows\")"]
+[target."cfg(target_os = \"windows\")".dependencies]
+[target."cfg(target_os = \"windows\")".dependencies.winapi]
+version = "0"
+features = [ "winuser", "errhandlingapi", "processthreadsapi" ]
+
+[target."cfg(target_os = \"macos\")"]
+[target."cfg(target_os = \"macos\")".dependencies]
 objc = "0.2.7"
 cocoa = "0.24"
-core-graphics = { version = "0.22", features = ["highsierra"] }
 
-[target.'cfg(target_os = "linux")'.dependencies]
+[target."cfg(target_os = \"macos\")".dependencies.core-graphics]
+version = "0.22"
+features = [ "highsierra" ]
+
+[target."cfg(target_os = \"linux\")"]
+[target."cfg(target_os = \"linux\")".dependencies]
 libc = "0"
-openssl = { version = "0.10", features = ["vendored"] }
-x11 = { version = "2", features = ["xlib", "xrecord", "xinput"] }
 
+[target."cfg(target_os = \"linux\")".dependencies.openssl]
+version = "0.10"
+features = [ "vendored" ]
 
+[target."cfg(target_os = \"linux\")".dependencies.x11]
+version = "2"
+features = [ "xlib", "xrecord", "xinput" ]
+
+[profile]
+[profile.dev]
+[profile.dev.package]
 [profile.dev.package.kira]
 opt-level = 3
+
 [profile.release]
 panic = "abort"
 codegen-units = 1
@@ -60,7 +79,4 @@ opt-level = "z"
 strip = true
 
 [features]
-# this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
-# If you use cargo directly instead of tauri's cli you can use this feature flag to switch between tauri's `dev` and `build` modes.
-# DO NOT REMOVE!!
 custom-protocol = [ "tauri/custom-protocol" ]

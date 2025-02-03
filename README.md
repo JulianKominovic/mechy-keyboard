@@ -131,8 +131,8 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 - [x] Shortcut for muting
 - [x] Shortcut for changing volume
 - [ ] Shortcut for changing soundpack
-- [ ] Tray icon
-- [ ] Minimize to tray
+- [x] Tray icon
+- [x] Minimize to tray
 - [ ] Implement menubar features (like changing soundpack, volume, etc) on macOS
 - [ ] Open on startup
 - [ ] Block internet access
@@ -147,6 +147,11 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 - [ ] Optimize the app
 - [ ] Add a way to report bugs
 - [ ] Add a way to request features
+- [ ] Migration to Tauri 2.0
+- [ ] Add a way to check for updates
+- [ ] Remove the need for updating the app manually
+- [ ] Remove the need for updating the app for new soundpacks
+- [ ] Add a way to donate
 
 ## Technical details
 

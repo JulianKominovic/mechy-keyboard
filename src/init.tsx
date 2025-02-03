@@ -11,17 +11,21 @@ import { platform } from "@tauri-apps/api/os";
 import { info, warn } from "tauri-plugin-log-api";
 import { getSoundpacksInstalled } from "./integration/soundpacks";
 import { version, homepage, repository } from "../package.json";
-import { GithubLogo, TwitterLogo } from "@phosphor-icons/react";
+import { GithubLogo, TwitterLogo, Globe } from "@phosphor-icons/react";
 import UnicompLogo from "./assets/UnicompLogo";
 
 export const SOCIAL = [
   {
-    icon: <GithubLogo weight="fill" size={18} />,
-    url: "https://github.com/JulianKominovic/mechy-keyboard",
+    icon: <Globe weight="fill" size={18} />,
+    url: "https://jkominovic.dev",
   },
   {
     icon: <TwitterLogo weight="fill" size={18} />,
     url: "https://twitter.com/juliankominovic",
+  },
+  {
+    icon: <GithubLogo weight="fill" size={18} />,
+    url: "https://github.com/JulianKominovic/mechy-keyboard",
   },
 ];
 export const MUTE_SHORTCUT = "CommandOrControl+Shift+M";

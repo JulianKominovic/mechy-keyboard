@@ -1,9 +1,15 @@
-import { chooseSoundpack } from "../bindings";
 import { SOUNDPACKS_DIR } from "../init";
-import { fs } from "@tauri-apps/api";
+import { fs, invoke } from "@tauri-apps/api";
 
-export async function changeSoundpack(id: string) {
-  return await chooseSoundpack(id, SOUNDPACKS_DIR);
+export function changeSoundpack(id: string) {
+  return invoke("choose_soundpack", {
+    soundpackId: id,
+    soundpackFolder: SOUNDPACKS_DIR,
+  });
+}
+
+export function setVolumeLevel(volume: number) {
+  return invoke("set_volume_level", { volume });
 }
 
 export async function getSoundpacksInstalled(): Promise<string[]> {
@@ -12,4 +18,8 @@ export async function getSoundpacksInstalled(): Promise<string[]> {
     (soundpacks.map((e) => e.name).filter(Boolean) as string[] | undefined) ||
     []
   );
+}
+
+export function deleteSoundpacks() {
+  return fs.removeDir(SOUNDPACKS_DIR, { recursive: true });
 }

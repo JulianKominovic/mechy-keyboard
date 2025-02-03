@@ -4,19 +4,36 @@ export default {
   theme: {
     extend: {
       colors: {
-        // primary: {
-        //   50: "#FCF9F7",
-        //   100: "#F8F1EC",
-        //   200: "#F2E2D9",
-        //   300: "#EBD4C6",
-        //   400: "#E2C0AC",
-        //   500: "#D9AC92",
-        //   600: "#D09777",
-        //   700: "#C58059",
-        //   800: "#AE663D",
-        //   900: "#79472A",
-        //   950: "#5B3520",
-        // },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
         primary: {
           50: "#FFF9F5",
           100: "#FDEFE8",
@@ -30,21 +47,13 @@ export default {
           900: "#8C3C0D",
           950: "#6C2A04",
         },
-        // primary: {
-        //   50: "#FFF6F5",
-        //   100: "#FEEFEC",
-        //   200: "#FBE1DA",
-        //   300: "#F4D0C2",
-        //   400: "#EABDA9",
-        //   500: "#D9AC92",
-        //   600: "#DC926F",
-        //   700: "#DF7149",
-        //   800: "#DB4319",
-        //   900: "#A52308",
-        //   950: "#800F00",
-        // },
+      },
+      boxShadow: {
+        "b-card":
+          "rgba(0, 20, 20, 0.1) 0px 20px 140px 0px, rgba(0, 20, 20, 0.1) 0px 25px 20px 0px, rgb(255, 255, 255) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",
+        natural: `rgba(43, 41, 46, 0.2) 0px 20px 80px, rgba(0, 20, 20, 0.04) 0px 0px 0px 1px`,
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };

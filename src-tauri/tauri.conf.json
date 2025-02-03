@@ -9,9 +9,15 @@
   },
   "package": {
     "productName": "Mechy Keyboard",
-    "version": "1.0.4"
+    "version": "1.0.0"
   },
   "tauri": {
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": false,
+      "title": "Mechy Keyboard",
+      "menuOnLeftClick": true
+    },
     "allowlist": {
       "all": false,
       "os": {
@@ -22,61 +28,29 @@
       },
       "shell": {
         "all": false,
-        "execute": false,
-        "open": "^((https?://)|(file://)).+$",
+        "execute": true,
+        "open": "^.+$",
         "sidecar": false
       },
-
       "window": {
         "all": false,
-        "center": false,
-        "close": false,
-        "create": false,
-        "hide": false,
-        "maximize": false,
-        "minimize": false,
-        "print": false,
-        "requestUserAttention": false,
-        "setAlwaysOnTop": false,
-        "setClosable": false,
-        "setContentProtected": false,
-        "setCursorGrab": false,
-        "setCursorIcon": false,
-        "setCursorPosition": false,
-        "setCursorVisible": false,
-        "setDecorations": false,
-        "setFocus": false,
-        "setFullscreen": false,
-        "setIcon": false,
-        "setIgnoreCursorEvents": false,
-        "setMaxSize": false,
-        "setMaximizable": false,
-        "setMinSize": false,
-        "setMinimizable": false,
-        "setPosition": false,
-        "setResizable": false,
-        "setSize": false,
-        "setSkipTaskbar": false,
-        "setTitle": false,
-        "show": false,
-        "startDragging": true,
-        "unmaximize": false,
-        "unminimize": false
+        "startDragging": true
       },
       "path": {
         "all": true
       },
       "fs": {
         "all": false,
-        "copyFile": false,
         "createDir": true,
         "exists": true,
         "readDir": true,
-        "readFile": false,
-        "removeDir": false,
-        "removeFile": false,
-        "renameFile": false,
-        "scope": ["$APPDATA/**/*", "$APPCACHE/**/*", "$APPLOG/**/*"],
+        "removeDir": true,
+        "scope": [
+          "$APPDATA/**/*",
+          "$APPCACHE/**/*",
+          "$APPCACHE",
+          "$APPLOG/**/*"
+        ],
         "writeFile": true
       }
     },
@@ -102,14 +76,11 @@
         "exceptionDomain": "",
         "frameworks": [],
         "providerShortName": null,
-        "signingIdentity": "-",
-        "license": "MIT",
-        "minimumSystemVersion": "10.13"
+        "signingIdentity": "-"
       },
       "resources": [],
       "shortDescription": "Give your keyboard a voice.",
       "targets": ["deb", "dmg", "app"],
-
       "publisher": "Julian Kominovic",
       "windows": {
         "certificateThumbprint": null,
@@ -139,7 +110,8 @@
         "hiddenTitle": true,
         "title": "Mechy Keyboard",
         "width": 800,
-        "fileDropEnabled": false
+        "fileDropEnabled": false,
+        "skipTaskbar": true
       }
     ]
   }
