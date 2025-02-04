@@ -33,7 +33,7 @@ importers:
         specifier: github:tauri-apps/tauri-plugin-log#v1
         version: https://codeload.github.com/tauri-apps/tauri-plugin-log/tar.gz/2bb26e22f7f7b4f164bad02f0ae4085796f77fff
       use-local-storage:
-        specifier: 3.0.0
+        specifier: ^3.0.0
         version: 3.0.0(react@18.2.0)
     devDependencies:
       '@tauri-apps/cli':

@@ -41,7 +41,7 @@
     "react-dom": "18.2.0",
     "sonner": "1.5.0",
     "tauri-plugin-log-api": "github:tauri-apps/tauri-plugin-log#v1",
-    "use-local-storage": "3.0.0"
+    "use-local-storage": "^3.0.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "1.5.6",

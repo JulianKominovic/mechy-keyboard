@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useSyncExternalStore,
-} from "react";
-import useLocalStorage from "use-local-storage";
+import { useEffect, useSyncExternalStore } from "react";
 import {
   LOCAL_STORAGE_VOLUME_KEY,
   MUTE_SHORTCUT,
@@ -29,7 +22,8 @@ import Shortcut from "./shortcut";
 import { setVolumeLevel } from "../integration/soundpacks";
 
 // Using sync external storage
-const localStorageVolume = localStorage.getItem("volume") || "50";
+const localStorageVolume =
+  localStorage.getItem(LOCAL_STORAGE_VOLUME_KEY) || "50";
 let volume = localStorageVolume ? parseInt(localStorageVolume) : 50;
 let previousVolumeBeforeMute = volume;
 let listeners: Function[] = [];
@@ -39,7 +33,7 @@ export const volumeStore = {
     value = Math.min(100, Math.max(0, value));
     previousVolumeBeforeMute = volume;
     volume = value;
-    localStorage.setItem("volume", value.toString());
+    localStorage.setItem(LOCAL_STORAGE_VOLUME_KEY, value.toString());
     emitChange();
   },
   subscribe(listener: Function) {
@@ -58,7 +52,7 @@ export const volumeStore = {
       previousVolumeBeforeMute = volume;
       volume = 0;
     }
-    localStorage.setItem("volume", volume.toString());
+    localStorage.setItem(LOCAL_STORAGE_VOLUME_KEY, volume.toString());
     sendVolumeLevel();
     emitChange();
   },
