@@ -11,7 +11,7 @@ const Main = () => {
 
   return (
     <main className="relative w-full h-full px-2 py-2 col-[2/3] row-[1/3]">
-      <div className="relative h-full px-8 py-8 pt-8 overflow-x-hidden overflow-y-auto rounded-lg shadow-lg border border-white/[0.05] bg-neutral-100 bg-gradient-to-tl from-[#d9ac92] to-[#dfb398]">
+      <div className="relative h-full px-8 py-8 pt-8 overflow-x-hidden overflow-y-auto rounded-lg shadow-lg border border-white/[0.05] bg-neutral-100 bg-gradient-to-tl from-primary-300 to-primary-400">
         <img
           className="absolute -right-32 z-10 -top-28 drop-shadow-[0px_6px_100px_#ff88008e] shadow-primary-950 select-none"
           src={LogoImage}
