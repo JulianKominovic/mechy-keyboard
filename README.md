@@ -63,7 +63,7 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 
 ## Roadmap
 
-https://github.com/users/JulianKominovic/projects/3
+https://mechy-keyboard.jkominovic.dev/roadmap
 
 ## References
 
