@@ -110,48 +110,9 @@ I'm working on a way to block the app from accessing the internet. However I'm n
 - [Adobe AI background remover](https://www.adobe.com/express/feature/ai/image/remove-background)
 - [tints.dev](https://www.tints.dev/primary/D9AC92) for the color palette
 
-## Checklist
+## Roadmap
 
-- [ ] Support newer Mechvibes soundpack schemas
-- [ ] Add new soundpacks
-- [x] Give credit to the soundpacks authors
-- [x] Use standard folders
-  - [x] logs
-  - [x] app data
-  - [x] app cache
-- [x] Download soundpacks from CDN
-- [ ] Click sounds
-- [x] Change the soundpack
-- [x] Change the volume
-- [ ] Random mode: mixup a bunch of soundpacks
-- [x] Key up sound
-- [x] 3D sound
-- [x] Key press variation
-- [x] Key down sound
-- [x] Shortcut for muting
-- [x] Shortcut for changing volume
-- [ ] Shortcut for changing soundpack
-- [x] Tray icon
-- [x] Minimize to tray
-- [ ] Implement menubar features (like changing soundpack, volume, etc) on macOS
-- [ ] Open on startup
-- [ ] Block internet access
-- [x] Add soundpacks metadata
-- [ ] Implement tags
-- [ ] Implement search
-- [ ] Implement sorting
-- [ ] Test on Windows
-- [ ] Test on Linux
-- [x] Test on macOS
-- [ ] Reduce the app size
-- [ ] Optimize the app
-- [ ] Add a way to report bugs
-- [ ] Add a way to request features
-- [ ] Migration to Tauri 2.0
-- [ ] Add a way to check for updates
-- [ ] Remove the need for updating the app manually
-- [ ] Remove the need for updating the app for new soundpacks
-- [ ] Add a way to donate
+https://github.com/users/JulianKominovic/projects/3
 
 ## Technical details
 
