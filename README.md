@@ -1,42 +1,12 @@
-![github og image (1)](https://github.com/user-attachments/assets/7f74037c-a5cb-4624-bf3d-e26a5ebe018e)
+[![mechy keyboard screenshot](https://github.com/user-attachments/assets/3d11f77e-2ba7-4f51-a8b5-baa8533d6f1f)](https://mechy-keyboard.jkominovic.dev)
 
 ## Installation
 
-### MacOS
-
-1. Download the latest release from the [releases page](https://github.com/JulianKominovic/mechy-keyboard/releases/latest)
-2. Download the .app file
-3. Move the file to the Applications folder
-4. Open the app
-
-### Ubuntu 24.04 (only on X11)
-
-> The app is not compatible with Wayland. If you are using Wayland, you need to switch to X11. You can do it by logging out and selecting X11 in the login screen. (google it, it's easy)
-
-1. Install prerequisites
-
-```bash
-sudo apt install libfuse2
-
-```
-
-2. Download the latest release from the [releases page](https://github.com/JulianKominovic/mechy-keyboard/releases/latest)
-3. Download .AppImage file
-4. Make the file executable
-
-```bash
-# Replace the file name with the one you downloaded
-chmod +x mechy-keyboard-1.0.0-amd64.AppImage
-```
-
-5. Run the file with sudo
-
-```bash
-# Replace the file name with the one you downloaded
-./mechy-keyboard-1.0.0-amd64.AppImage
-```
+See [Mechy Keyboard Getting started guide](https://mechy-keyboard.jkominovic.dev/docs/getting-started)
 
 ## Features
+
+Visit [Mechy Keyboard website](https://mechy-keyboard.jkominovic.dev)
 
 ### ⚡️ Fast & lightweight
 
@@ -91,113 +61,15 @@ I know this kind of software can be a privacy concern. That's why I made sure to
 
 I'm working on a way to block the app from accessing the internet. However I'm not sure if it's possible with Tauri. If you know how to do it, please let me know.
 
+## Roadmap
+
+https://github.com/users/JulianKominovic/projects/3
+
 ## References
 
 - [Async tauri runtime example](https://rfdonnelly.github.io/posts/tauri-async-rust-process/#the-rust-side)
 - [Tauri async commands conflict with std::sync::Mutex](https://stackoverflow.com/questions/67277282/async-function-the-trait-stdmarkersend-is-not-implemented-for-stdsync)
 - [Tauri async commands official documentation](https://tauri.app/v1/guides/features/command/)
-
-## Thanks to
-
-- [Kira Rust backend agnostic library](https://docs.rs/kira/latest/kira/index.html) for the audio server manager
-- [ZacharyL2](https://github.com/ZacharyL2) for [key listening code](https://github.com/ZacharyL2/KeyEcho/blob/master/src-tauri/src/keyecho/listen_key)
-- [Mechvibes](https://github.com/hainguyents13/mechvibes/) for the soundpacks and the inspiration. Check their [website](https://mechvibes.com/).
-- Check [Rusty vibes](https://github.com/KunalBagaria/rustyvibes). I took some inspiration from it and source code also 😜.
-- [Rustdesk rdev fork](https://github.com/rustdesk-org/rdev) that fixes a macOS crash bug and some other bugs.
-- [Fooocus](https://github.com/lllyasviel/Fooocus) for AI logo generation
-- [IOPaint](https://github.com/Sanster/IOPaint) an open source AI objects remover to fix some artifacts in the generated logos
-- [Upscayl](https://upscayl.org/) to scale the generated logos up to 4k
-- [Adobe AI background remover](https://www.adobe.com/express/feature/ai/image/remove-background)
-- [tints.dev](https://www.tints.dev/primary/D9AC92) for the color palette
-
-## Roadmap
-
-https://github.com/users/JulianKominovic/projects/3
-
-## Technical details
-
-This app is a mere excuse to learn Rust and Tauri.
-The source code may not be large, although it required a lot of research and testing to make it work.
-In this few houndred lines of code you will find a lot of interesting things such as:
-
-- [x] Tauri commands
-- [x] Tauri window management
-- [x] Rust async
-- [x] Multithreading
-- [x] Mutexes
-- [x] Audio management
-
-### Soundpacks
-
-1. Soundpacks come from [Mechvibes](https://mechvibes.com/sound-packs/).
-2. Each soundpack is a zip file with the following structure **(for now)**:
-   - `soundpack-name/`
-     - `config.json`: metadata about the soundpack
-     - `sound.ogg`: the sound file
-3. I download the soundpacks from Mechvibes, compress them and upload them to github repo as a .zip file.
-
-### Key listener
-
-I know this is a privacy concern because the app listens to your key events. That's why I'm going to explain how the key listener works.
-This is probably the most important part of the app.
-
-I'm using [Fufesou rdev fork](https://github.com/fufesou/rdev).
-Rust crate [here](https://docs.rs/rdev/latest/rdev/).
-
-rdev is a Rust library that allows you to listen to key events. It's a simple library that listens to key and mouse events.
-
-1. As listen function from [Fufesou rdev fork](https://github.com/fufesou/rdev) is blocking I need to spawn a new thread in order to listen to the key events.
-2. I'm going to explain how it works. The thread code is the following:
-
-```rust
-// Spawn a new thread to avoid blocking the main thread (UI thread and Tauri's runtime)
-thread::spawn(|| {
-        // Listen to IO events
-        // This listener now is listen for your mouse & keyboard events
-        if let Err(error) = listen(move |event| match event.event_type {
-            // When a key is pressed
-            EventType::KeyPress(key) => {
-                // KEY_PRESSED is a mutable mutex that contains a list of keys that are currently pressed
-                // With this method we avoid playing the sound multiple times when the key is pressed and held
-                let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
-                // If the key is already pressed, we do nothing and prevent the sound from playing
-                if keys_pressed_lock.contains(&key) {
-                    drop(keys_pressed_lock);
-                    return;
-                } else {
-                    // If the key is not pressed, we add it to the list
-                    keys_pressed_lock.push(key);
-                    drop(keys_pressed_lock);
-                }
-                // This line do the magic
-                tauri::async_runtime::block_on(async {
-                    // SOUNDPACK is a mutable mutex that contains the Soundpack struct with the sound data
-                    // Here we are passing the key to the play_sound function and a boolean to indicate if the sound is a key up sound
-                    SOUNDPACK.lock().await.play_sound(key, false);
-                });
-            }
-            // When a key is released
-            EventType::KeyRelease(key) => {
-                let mut keys_pressed_lock = KEYS_PRESSED.lock().unwrap();
-                // We remove the key from the list of keys that are currently pressed
-                keys_pressed_lock.retain(|&x| x != key);
-                tauri::async_runtime::block_on(async {
-                    // We play the key up sound
-                    SOUNDPACK.lock().await.play_sound(key, true);
-                });
-            }
-            // We don't care about other events such as mouse clicks, mouse movements, mouse scrolls, etc
-            _ => {}
-        }) {
-            error!("Error: {:?}", error)
-        }
-    });
-```
-
-You can check the main.rs file [here](https://github.com/JulianKominovic/mechy-keyboard/blob/master/src-tauri/src/main.rs#L83C5-L111C8)
-
-3. To keep things responsive we avoid doing heavy operations in the previous thread so we don't block it. Sound were already prepared in the `choose_soundpack` tauri command which is called by the frontend when the app starts **(I'm 99% sure this will change in the future)**.
-4. So when a key is pressed, we just play the sound. We don't load the sound, we just play it. This is why the app is so fast and responsive.
 
 ## Development
 
@@ -213,3 +85,12 @@ Tauri development requisites: https://tauri.app/v1/guides/getting-started/prereq
 sudo apt-get update
 sudo apt-get install build-essential pkg-config libglib2.0-dev libpango1.0-dev libgdk-pixbuf2.0-dev libatk-bridge2.0 libsoup2.4-dev libgtk-3-dev curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev javascriptcoregtk-4.1 libsoup-3.0 webkit2gtk-4.1 libwebkit2gtk-4.0-dev
 ```
+
+### Soundpacks
+
+1. Soundpacks come from [Mechvibes](https://mechvibes.com/sound-packs/).
+2. Each soundpack is a zip file with the following structure **(for now)**:
+   - `soundpack-name/`
+     - `config.json`: metadata about the soundpack
+     - `sound.ogg`: the sound file
+3. I download the soundpacks from Mechvibes, compress them and upload them to github repo as a .zip file.
