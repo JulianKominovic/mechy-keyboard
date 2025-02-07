@@ -14,7 +14,10 @@ function App() {
     <ContextProvider>
       <nav
         data-tauri-drag-region
-        className="fixed flex items-center top-0 left-0 w-full h-[48px] z-50 px-20"
+        className={cn(
+          "fixed flex items-center top-0 left-0 w-full h-[48px] z-50 px-20",
+          PLATFORM === "darwin" ? "h-[48px]" : "h-0"
+        )}
       >
         {PLATFORM === "darwin" || PLATFORM === "ios" ? <MacosWarning /> : null}
       </nav>
@@ -27,7 +30,8 @@ function App() {
       >
         <aside
           className={cn(
-            "flex flex-col relative select-none pt-2 pl-4 pr-2 w-full overflow-y-auto transition-opacity duration-200 pb-4 h-full col-[1/2] row-[2/3]"
+            "flex flex-col relative select-none pt-2 pl-4 pr-2 w-full overflow-y-auto transition-opacity duration-200 pb-4 h-full col-[1/2]",
+            PLATFORM === "darwin" ? "row-[2/3]" : "row-[1/3]"
           )}
         >
           <KeyboardSelector />

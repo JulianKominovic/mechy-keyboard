@@ -77,13 +77,13 @@ Tauri development requisites: https://tauri.app/v1/guides/getting-started/prereq
 
 ### Linux
 
-#### Ubuntu 24.04
+#### Ubuntu 24.04, 22.10
 
 1. Install prerequisites
 
 ```bash
 sudo apt-get update
-sudo apt-get install build-essential pkg-config libglib2.0-dev libpango1.0-dev libgdk-pixbuf2.0-dev libatk-bridge2.0 libsoup2.4-dev libgtk-3-dev curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev javascriptcoregtk-4.1 libsoup-3.0 webkit2gtk-4.1 libwebkit2gtk-4.0-dev
+sudo apt-get install build-essential pkg-config libglib2.0-dev libpango1.0-dev libgdk-pixbuf2.0-dev libatk-bridge2.0 libsoup2.4-dev libgtk-3-dev curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev javascriptcoregtk-4.1 libsoup-3.0 webkit2gtk-4.1 libwebkit2gtk-4.0-dev libasound2-dev
 ```
 
 ### Soundpacks
