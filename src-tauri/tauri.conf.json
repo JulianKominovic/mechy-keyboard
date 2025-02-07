@@ -80,11 +80,7 @@
       },
       "resources": [],
       "shortDescription": "Give your keyboard a voice.",
-      "targets": [
-        "deb",
-        "dmg",
-        "app"
-      ],
+      "targets": ["deb", "dmg", "app"],
       "publisher": "Julian Kominovic",
       "windows": {
         "certificateThumbprint": null,
