@@ -3,7 +3,6 @@ import { useContext } from "react";
 import Button from "../../components/button";
 import { Context } from "../../context";
 import useShortcutsStore from "../../stores/shortcuts";
-import cn from "../../utils/cn";
 
 const ActionsPage = () => {
   const { clearCache, clearSoundpacks } = useContext(Context);

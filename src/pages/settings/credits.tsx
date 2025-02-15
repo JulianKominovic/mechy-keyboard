@@ -1,12 +1,8 @@
-import React from "react";
 import Button from "../../components/button";
 import { SOCIAL } from "../../init";
 import { Star } from "@phosphor-icons/react";
-import LogoImage from "../../assets/logo-transparent.png";
 
-type Props = {};
-
-const CreditsPage = (props: Props) => {
+const CreditsPage = () => {
   return (
     <>
       <h2 className="flex items-center gap-2 mb-4 text-lg font-semibold text-primary-900">

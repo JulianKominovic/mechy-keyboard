@@ -1,5 +1,4 @@
-import { Info, Lightning } from "@phosphor-icons/react";
-import Button from "../../components/button";
+import { Info } from "@phosphor-icons/react";
 import {
   GITHUB_REPO,
   VERSION,
@@ -7,7 +6,6 @@ import {
   APP_CONFIG_DIR,
   APP_CACHE_DIR,
   SOUNDPACKS_DIR,
-  SOCIAL,
 } from "../../init";
 
 const folders = [
