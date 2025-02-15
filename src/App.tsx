@@ -1,47 +1,52 @@
 import { Toaster } from "sonner";
-import Separator from "./components/separator";
 import ContextProvider from "./context";
-import Main from "./sections/Main";
-import cn from "./utils/cn";
-import Actions from "./sections/Actions";
-import Info from "./sections/Info";
+import ShortcutsPage from "./pages/settings/shortcuts";
+import { Route, Switch } from "wouter";
+import SettingsPage from "./pages/settings";
+import Layout from "./components/layout";
 import KeyboardSelector from "./sections/KeyboardSelector";
-import { PLATFORM } from "./init";
-import MacosWarning from "./sections/MacosWarning";
-
+import Home from "./pages/home";
+import SettingsSidebar from "./pages/settings/sidebar";
+import ActionsPage from "./pages/settings/actions";
+import InfoPage from "./pages/settings/info";
+import CreditsPage from "./pages/settings/credits";
 function App() {
   return (
     <ContextProvider>
-      <nav
-        data-tauri-drag-region
-        className={cn(
-          "fixed flex items-center top-0 left-0 w-full h-[48px] z-50 px-20",
-          PLATFORM === "darwin" ? "h-[48px]" : "h-0"
-        )}
-      >
-        {PLATFORM === "darwin" || PLATFORM === "ios" ? <MacosWarning /> : null}
-      </nav>
-      <div
-        className="w-full grid grid-rows-1 h-[100dvh] overflow-hidden transition-all ease-in-out duration-300"
-        style={{
-          gridTemplateColumns: "280px 1fr",
-          gridTemplateRows: "48px 1fr",
-        }}
-      >
-        <aside
-          className={cn(
-            "flex flex-col relative select-none pt-2 pl-4 pr-2 w-full overflow-y-auto transition-opacity duration-200 pb-4 h-full col-[1/2]",
-            PLATFORM === "darwin" ? "row-[2/3]" : "row-[1/3]"
-          )}
-        >
-          <KeyboardSelector />
-          <Separator className="mt-4 mb-2">Actions</Separator>
-          <Actions />
-          <Separator className="mt-4 mb-2">Info</Separator>
-          <Info />
-        </aside>
-        <Main />
-      </div>
+      <Layout
+        main={
+          <Switch>
+            <Route path="/">
+              <Home />
+            </Route>
+            <Route path="/settings">
+              <SettingsPage />
+            </Route>
+            <Route path="/settings/shortcuts">
+              <ShortcutsPage />
+            </Route>
+            <Route path="/settings/actions">
+              <ActionsPage />
+            </Route>
+            <Route path="/settings/info">
+              <InfoPage />
+            </Route>
+            <Route path="/settings/credits">
+              <CreditsPage />
+            </Route>
+          </Switch>
+        }
+        side={
+          <Switch>
+            <Route path="/">
+              <KeyboardSelector />
+            </Route>
+            <Route path="/settings/:subsection?">
+              <SettingsSidebar />
+            </Route>
+          </Switch>
+        }
+      />
       <Toaster
         toastOptions={{
           className:

@@ -1,11 +1,3 @@
-import { useEffect, useSyncExternalStore } from "react";
-import {
-  LOCAL_STORAGE_VOLUME_KEY,
-  MUTE_SHORTCUT,
-  PLATFORM,
-  VOLUME_DOWN_SHORTCUT,
-  VOLUME_UP_SHORTCUT,
-} from "../init";
 import {
   SpeakerX,
   SpeakerLow,
@@ -15,121 +7,21 @@ import {
 } from "@phosphor-icons/react";
 import { useDebounceFunction } from "../utils/debounce-fn";
 import { toast } from "sonner";
-import { register, unregister } from "@tauri-apps/api/globalShortcut";
 import { error } from "tauri-plugin-log-api";
-import { Keys } from "../utils/keymaps";
+import { tauriOrJsKeyToString } from "../utils/keymaps";
 import Shortcut from "./shortcut";
 import { setVolumeLevel } from "../integration/soundpacks";
-
-// Using sync external storage
-const localStorageVolume =
-  localStorage.getItem(LOCAL_STORAGE_VOLUME_KEY) || "50";
-let volume = localStorageVolume ? parseInt(localStorageVolume) : 50;
-let previousVolumeBeforeMute = volume;
-let listeners: Function[] = [];
-
-export const volumeStore = {
-  setVolume(value: number) {
-    value = Math.min(100, Math.max(0, value));
-    previousVolumeBeforeMute = volume;
-    volume = value;
-    localStorage.setItem(LOCAL_STORAGE_VOLUME_KEY, value.toString());
-    emitChange();
-  },
-  subscribe(listener: Function) {
-    listeners = [...listeners, listener];
-    return () => {
-      listeners = listeners.filter((l) => l !== listener);
-    };
-  },
-  getSnapshot() {
-    return +volume;
-  },
-  toggleMute() {
-    if (volume === 0) {
-      volume = previousVolumeBeforeMute;
-    } else {
-      previousVolumeBeforeMute = volume;
-      volume = 0;
-    }
-    localStorage.setItem(LOCAL_STORAGE_VOLUME_KEY, volume.toString());
-    sendVolumeLevel();
-    emitChange();
-  },
-};
-
-function emitChange() {
-  for (let listener of listeners) {
-    listener();
-  }
-}
-
-async function registerKeyboardShortcut(
-  shortcut: string,
-  callback: () => void
-) {
-  await unregister(shortcut)
-    .then(() => {
-      register(shortcut, callback).catch((err) => {
-        toast.warning("Error registering shortcut", {
-          duration: 5000,
-          description: err,
-        });
-        error("Failed to register shortcut" + err);
-      });
-    })
-    .catch((err) => {
-      toast.warning("Error unregistering shortcut", {
-        duration: 5000,
-        description: err,
-      });
-      error("Failed to unregister shortcut" + err);
-    });
-
-  return () =>
-    unregister(shortcut).catch((err) => {
-      toast.warning("Error unregistering shortcut", {
-        duration: 5000,
-        description: err,
-      });
-    });
-}
-
-const unregisterMuteShortcut = registerKeyboardShortcut(
-  MUTE_SHORTCUT,
-  volumeStore.toggleMute
-);
-const unregisterVolumeUpShortcut = registerKeyboardShortcut(
-  VOLUME_UP_SHORTCUT,
-  () => {
-    volumeStore.setVolume(volume + 5);
-    sendVolumeLevel();
-  }
-);
-const unregisterVolumeDownShortcut = registerKeyboardShortcut(
-  VOLUME_DOWN_SHORTCUT,
-  () => {
-    volumeStore.setVolume(volume - 5);
-    sendVolumeLevel();
-  }
-);
-
-function sendVolumeLevel() {
-  setVolumeLevel(volume / 100).catch((err) => {
-    error("Failed to set volume level" + err);
-    toast.error("Failed to set volume level", {
-      duration: 5000,
-      description: err,
-    });
-  });
-}
+import useVolumeStore from "../stores/volume";
+import useShortcutsStore from "../stores/shortcuts";
+import Button from "./button";
 
 const VolumeSlider = () => {
   const { debounce } = useDebounceFunction(50);
-  const value = useSyncExternalStore(
-    volumeStore.subscribe,
-    volumeStore.getSnapshot
-  );
+  const volumeStore = useVolumeStore((s) => s);
+  const value = volumeStore.volume;
+  const volumeUpShortcut = useShortcutsStore((s) => s.shortcuts.volumeUp);
+  const volumeDownShortcut = useShortcutsStore((s) => s.shortcuts.volumeDown);
+  const muteShortcut = useShortcutsStore((s) => s.shortcuts.mute);
 
   function setVolume(value: number) {
     value = Math.min(100, Math.max(0, value));
@@ -145,42 +37,32 @@ const VolumeSlider = () => {
     });
   }
 
-  useEffect(() => {
-    return () => {
-      unregisterMuteShortcut.then((fn) => fn());
-      unregisterVolumeUpShortcut.then((fn) => fn());
-      unregisterVolumeDownShortcut.then((fn) => fn());
-    };
-  }, []);
-
   return (
     <fieldset className="relative z-10 select-none text-primary-800">
       <label
         htmlFor="volume"
-        className="block text-sm font-semibold leading-tight text-primary-900 whitespace-nowrap dark:text-white"
+        className="block font-semibold leading-tight text-primary-900 whitespace-nowrap dark:text-white"
       >
         Volume ({value}%)
       </label>
-      <span className="mb-3 text-xs text-primary-900/70">
+      <p className="mb-4 text-sm text-primary-900/70">
         Volume is relative to the system volume.
-      </span>
+      </p>
       <div className="flex items-center gap-2">
-        <button
+        <Button
           onClick={() => {
             setVolume(value - 5);
           }}
-          className="flex items-center w-auto h-6 gap-1 p-1 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
+          variant="secondary"
+          size="sm"
+          className="px-2 text-base text-primary-900"
         >
           <Minus weight="bold" />
           <Shortcut
             className="pl-1 border-l border-primary-900/20"
-            keys={[
-              PLATFORM === "darwin" ? Keys.MAC_COMMAND : Keys.CONTROL,
-              Keys.SHIFT,
-              Keys.ARROW_DOWN,
-            ]}
+            keys={volumeDownShortcut.visual.map(tauriOrJsKeyToString)}
           />
-        </button>
+        </Button>
         <input
           id="volume"
           type="range"
@@ -191,27 +73,27 @@ const VolumeSlider = () => {
           onChange={(e) => setVolume(Number(e.target.value))}
           className="w-full h-2 rounded-lg appearance-none cursor-pointer max-w-64 bg-primary-900/20"
         />
-        <button
+        <Button
           onClick={() => {
             setVolume(value + 5);
           }}
-          className="flex items-center w-auto h-6 gap-1 p-1 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
+          variant="secondary"
+          size="sm"
+          className="px-2 text-base text-primary-900"
         >
           <Plus weight="bold" />
           <Shortcut
             className="pl-1 border-l border-primary-900/20"
-            keys={[
-              PLATFORM === "darwin" ? Keys.MAC_COMMAND : Keys.CONTROL,
-              Keys.SHIFT,
-              Keys.ARROW_UP,
-            ]}
+            keys={volumeUpShortcut.visual.map(tauriOrJsKeyToString)}
           />
-        </button>
+        </Button>
       </div>
       <div className="flex items-center gap-2 mt-2">
-        <button
+        <Button
           onClick={volumeStore.toggleMute}
-          className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
+          variant="secondary"
+          size="sm"
+          className="px-2 text-base text-primary-900"
         >
           {value === 0 ? (
             <SpeakerX
@@ -237,45 +119,49 @@ const VolumeSlider = () => {
           )}
           <Shortcut
             className="pl-1 border-l border-primary-900/20"
-            keys={[
-              PLATFORM === "darwin" ? Keys.MAC_COMMAND : Keys.CONTROL,
-              Keys.SHIFT,
-              "M",
-            ]}
+            keys={muteShortcut.visual.map(tauriOrJsKeyToString)}
           />
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             setVolume(25);
           }}
-          className="p-1 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
+          variant="secondary"
+          size="sm"
+          className="px-2 text-base text-primary-900"
         >
           25%
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             setVolume(50);
           }}
-          className="p-1 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
+          variant="secondary"
+          size="sm"
+          className="px-2 text-base text-primary-900"
         >
           50%
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             setVolume(75);
           }}
-          className="p-1 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
+          variant="secondary"
+          size="sm"
+          className="px-2 text-base text-primary-900"
         >
           75%
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             setVolume(100);
           }}
-          className="p-1 rounded-lg bg-primary-900/10 text-primary-900 hover:bg-primary-900/20"
+          variant="secondary"
+          size="sm"
+          className="px-2 text-base text-primary-900"
         >
           100%
-        </button>
+        </Button>
       </div>
     </fieldset>
   );
