@@ -80,11 +80,7 @@
       },
       "resources": [],
       "shortDescription": "Give your keyboard a voice.",
-      "targets": [
-        "deb",
-        "dmg",
-        "app"
-      ],
+      "targets": ["deb", "dmg", "app"],
       "publisher": "Julian Kominovic",
       "windows": {
         "certificateThumbprint": null,
@@ -98,7 +94,7 @@
     "updater": {
       "active": true,
       "endpoints": [
-        "https://github.com/JulianKominovic/mechy-keyboard/releases/download/updater/update.json"
+        "https://github.com/JulianKominovic/mechy-keyboard/releases/download/updater.json"
       ],
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEMzMkMxNkIzMTBCOUQ2MkMKUldRczFya1FzeFlzdzlZb1F2MStJSittVUxBVDF1SjBVamJ6SmlWU3ZwdXpsN1VOMDFHUVhSTTMK"
