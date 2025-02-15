@@ -11,14 +11,12 @@ const Shortcut = ({ keys, ...rest }: Props) => {
     <kbd
       {...rest}
       className={clsx(
-        "flex items-center gap-0.5 leading-none font-semibold font-sans text-sm",
+        "flex items-center gap-0.5 leading-none font-semibold font-sans text-sm tabular-nums",
         rest.className
       )}
     >
       {keys.map((k, i) => (
-        <span key={id + i} className="">
-          {k as any}
-        </span>
+        <span key={id + i}>{k as any}</span>
       ))}
     </kbd>
   );

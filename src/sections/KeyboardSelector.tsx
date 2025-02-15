@@ -3,6 +3,7 @@ import Separator from "../components/separator";
 import { KEYBOARD_MODELS } from "../init";
 import cn from "../utils/cn";
 import { Context } from "../context";
+import Button from "../components/button";
 
 function KeyboardItems({
   soundpack,
@@ -16,13 +17,15 @@ function KeyboardItems({
   soundpack: (typeof KEYBOARD_MODELS)[0];
 }) {
   return (
-    <button
+    <Button
+      variant="ghost"
+      size={"sm"}
       onClick={onClick}
-      key={soundpack.id}
+      key={soundpack.id + soundpack.name}
+      aria-selected={isSelected}
       className={cn(
-        "flex items-center text-left w-full h-8 gap-2 text-black/60 hover:bg-black/10 text-xs rounded-lg px-2 text-ellipsis truncate mb-1",
-        isInstalled ? "opacity-100" : "opacity-35 hover:opacity-100",
-        isSelected ? "bg-black/[0.05]" : ""
+        "mb-1 px-3 w-full",
+        isInstalled ? "opacity-100" : "opacity-35 hover:opacity-100"
       )}
     >
       <div
@@ -34,7 +37,7 @@ function KeyboardItems({
       <span className="font-bold">{soundpack.vendor.name} •</span>
 
       <span className="truncate">{soundpack.name}</span>
-    </button>
+    </Button>
   );
 }
 

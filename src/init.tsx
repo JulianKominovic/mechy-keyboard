@@ -13,26 +13,57 @@ import { getSoundpacksInstalled } from "./integration/soundpacks";
 import { version, homepage, repository } from "../package.json";
 import { GithubLogo, TwitterLogo, Globe } from "@phosphor-icons/react";
 import UnicompLogo from "./assets/UnicompLogo";
-
+import Logo from "./assets/logo-transparent.png";
 export const SOCIAL = [
   {
-    icon: <Globe weight="fill" size={18} />,
+    icon: <Globe weight="fill" size={"1rem"} />,
     url: "https://jkominovic.dev",
+    text: <span>Check out my website</span>,
   },
   {
-    icon: <TwitterLogo weight="fill" size={18} />,
+    icon: <TwitterLogo weight="fill" size={"1rem"} />,
     url: "https://twitter.com/juliankominovic",
+    text: <span>Follow me</span>,
   },
   {
-    icon: <GithubLogo weight="fill" size={18} />,
+    icon: <GithubLogo weight="fill" size={"1rem"} />,
     url: "https://github.com/JulianKominovic/mechy-keyboard",
+    text: <span>Source code</span>,
+  },
+  {
+    icon: (
+      <img
+        src={Logo}
+        width={"1em"}
+        height={"1em"}
+        className="absolute left-0 object-contain w-auto h-10 -top-1"
+      />
+    ),
+    url: "https://mechy-keyboard.jkominovic.dev/",
+    text: <span className="ml-8">Mechy Keyboard website</span>,
   },
 ];
-export const MUTE_SHORTCUT = "CommandOrControl+Shift+M";
-export const VOLUME_UP_SHORTCUT = "CommandOrControl+Shift+ArrowUp";
-export const VOLUME_DOWN_SHORTCUT = "CommandOrControl+Shift+ArrowDown";
+
+export const DEFAULT_SHORTCUTS = {
+  mute: {
+    internal: ["CommandOrControl", "Shift", "M"],
+    visual: ["CmdOrCtrl", "Shift", "M"],
+  },
+  volumeUp: {
+    internal: ["CommandOrControl", "Shift", "ArrowUp"],
+    visual: ["CmdOrCtrl", "Shift", "ArrowUp"],
+  },
+  volumeDown: {
+    internal: ["CommandOrControl", "Shift", "ArrowDown"],
+    visual: ["CmdOrCtrl", "Shift", "ArrowDown"],
+  },
+};
+
 export const PLATFORM = await platform();
 export const VERSION = version;
+export const WEBSITE = "https://mechy-keyboard.jkominovic.dev";
+export const WEBSITE_CHANGELOG =
+  "https://mechy-keyboard.jkominovic.dev/changelog";
 export const GITHUB_REPO = repository;
 export const HOMEPAGE = homepage;
 export const APP_CACHE_DIR = await appCacheDir();
