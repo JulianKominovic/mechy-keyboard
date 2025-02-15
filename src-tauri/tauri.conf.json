@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "Mechy Keyboard",
-    "version": "1.0.0-beta.0"
+    "version": "1.0.0-beta.1"
   },
   "tauri": {
     "systemTray": {
@@ -80,7 +80,11 @@
       },
       "resources": [],
       "shortDescription": "Give your keyboard a voice.",
-      "targets": ["deb", "dmg", "app"],
+      "targets": [
+        "deb",
+        "dmg",
+        "app"
+      ],
       "publisher": "Julian Kominovic",
       "windows": {
         "certificateThumbprint": null,
