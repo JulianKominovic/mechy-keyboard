@@ -52,6 +52,21 @@ export default {
           950: "#6C2A04",
         },
       },
+      fontSize: {
+        xs: "0.75em",
+        sm: "0.875em",
+        base: "1em",
+        lg: "1.125em",
+        xl: "1.25em",
+        "2xl": "1.5em",
+        "3xl": "1.875em",
+        "4xl": "2.25em",
+        "5xl": "3em",
+        "6xl": "4em",
+        "7xl": "4.5em",
+        "8xl": "5em",
+        "9xl": "5.5em",
+      },
       boxShadow: {
         "b-card":
           "rgba(0, 20, 20, 0.1) 0px 20px 140px 0px, rgba(0, 20, 20, 0.1) 0px 25px 20px 0px, rgb(255, 255, 255) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px",

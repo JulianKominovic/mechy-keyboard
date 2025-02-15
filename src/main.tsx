@@ -6,6 +6,8 @@ import App from "./App";
 import "./fonts.css";
 import "./index.css";
 import { PLATFORM } from "./init";
+import useShortcutsStore from "./stores/shortcuts";
+import { clearKeyboardShortcuts } from "./utils/shortcut";
 
 if (PLATFORM !== "darwin") {
   document.body.style.background = "rgb(255,255,255)";
@@ -15,6 +17,7 @@ if (PLATFORM !== "darwin") {
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <App />
 );
+clearKeyboardShortcuts().finally(useShortcutsStore.getState().attachShortcuts);
 
 window.addEventListener("error", (event) => {
   error(event.error);

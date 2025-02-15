@@ -78,17 +78,18 @@ const ContextProvider = ({ children }: any) => {
 
   useEffect(() => {
     if (selectedSoundpackId) {
-      const id = toast.loading("Starting up", {
-        description: "Please wait while we load your soundpack",
-      });
-
-      changeSoundpack(selectedSoundpackId)
-        .then(() => {
+      toast.promise(changeSoundpack(selectedSoundpackId), {
+        success() {
           setSelectedSoundpackId(selectedSoundpackId);
           setInstalledSoundpacksIds((prev) => prev.add(selectedSoundpackId));
-        })
-        .catch(error)
-        .finally(() => toast.dismiss(id));
+          return "Soundpack loaded";
+        },
+        error(data) {
+          error(data);
+          return "Failed to load soundpack";
+        },
+        loading: "Loading soundpack your soundpack",
+      });
     }
   }, []);
 
